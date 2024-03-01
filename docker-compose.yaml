@@ -19,7 +19,7 @@ services:
   db:
     image: mariadb:lts
     ports:
-      - "3306:3306"
+      - "3307:3306"
     container_name: laravel-db
     restart: unless-stopped
     environment:
