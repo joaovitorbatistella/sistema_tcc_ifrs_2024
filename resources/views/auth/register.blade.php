@@ -16,6 +16,20 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
+        <!-- CPF -->
+        <div class="mt-4">
+            <x-input-label for="CPF" :value="__('CPF')" />
+            <x-text-input id="CPF" class="block mt-1 w-full" type="text" name="CPF" :value="old('CPF')" required autocomplete="CPF" />
+            <x-input-error :messages="$errors->get('CPF')" class="mt-2" />
+        </div>
+
+        <!-- CPF -->
+        <div class="mt-4">
+            <x-input-label for="RG" :value="__('RG')" />
+            <x-text-input id="RG" class="block mt-1 w-full" type="text" name="RG" :value="old('RG')" required autocomplete="RG" />
+            <x-input-error :messages="$errors->get('RG')" class="mt-2" />
+        </div>
+
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />
