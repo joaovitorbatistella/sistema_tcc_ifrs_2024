@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tcc', function (Blueprint $table) {
-            $table->unsignedBigInteger('tcc_id')->autoIncrements()->primary();
-            $table->unsignedBigInteger('user_id');
+        Schema::create('activity_step_template', function (Blueprint $table) {
+            $table->increments('activity_step_template_id');
+            $table->unsignedInteger('activity_template_id');
             $table->string('name');
-            $table->enum('status', ['in_progress', 'stopped', 'approved', 'completed']);
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->timestamps();
+            $table->foreign('activity_template_id')->references('activity_template_id')->on('activity_template');
         });
     }
 
@@ -27,7 +25,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::disableForeignKeyConstraints();
-        Schema::dropIfExists('tcc');
+        Schema::dropIfExists('activity_step_template');
         Schema::enableForeignKeyConstraints();
     }
 };

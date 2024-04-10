@@ -29,5 +29,6 @@ return new class extends Migration
     {
         Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('tcc_class');
+        Schema::enableForeignKeyConstraints();
     }
 };
