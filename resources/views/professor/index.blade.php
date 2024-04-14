@@ -1,17 +1,17 @@
 <x-app-layout>
     <x-slot:header>
-        <div>
-            <div class="sm:flex items-center justify-between">
+            <div class="sm:flex justify-between items-center">
                 <div>
                     <h2 class="font-semibold text-xl text-black">
                         {{ __('Professores') }}
                     </h2>
                 </div>
-                <button type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 border border-c-green rounded">
-                    <a href="{{route('professores-controller.create')}}">Adicionar Professor</a>
-                </button>
+                <div>
+                    <button type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 border border-red-600 rounded">
+                        <a href="{{route('professores-controller.create')}}">Adicionar Professor</a>
+                    </button>
+                </div>
             </div>
-        </div>
         </x-slot>
 
         <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp" rel="stylesheet" />
