@@ -1,12 +1,12 @@
 <x-app-layout>
     <x-slot:header>
-        <div>
-            <div class="sm:flex items-center justify-between">
-                <div>
-                    <h2 class="font-semibold text-xl text-black">
-                        {{ __('Detalhes do Aluno') }}
-                    </h2>
-                </div>
+        <div class="sm:flex justify-between items-center">
+            <div>
+                <h2 class="font-semibold text-xl text-black">
+                    Detalhes do Aluno {{$aluno->name}}
+                </h2>
+            </div>
+            <div>
                 <button type="button" class="bg-red-600 text-white text-lg font-bold py-1 px-2 border border-red-600 rounded">
                     <a href="{{route('alunos-controller.index')}}">Voltar</a>
                 </button>
@@ -18,64 +18,54 @@
             <div class="overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">
                 <div>
                     <input type="hidden" name="_method" value="PUT">
-                    <div style="margin-top: 15px;">
-                        <div style="margin-left: 50px; margin-right: 50px" class="sm:flex items-center">
+                    <div style="margin-top: 15px;"></div>
+                    <div style="margin-left: 50px; margin-right: 50px">
+                        <div>
                             <label class="text-gray-600">Nome:</label>
-                            <div style="margin-left: 15px;"></div>
-                            <input disabled type="text" size="100" name="name" value="{{$aluno->name}}" class="text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white mt-2">
+                            <input disabled type="text" name="name" value="{{$aluno->name}}" class="w-full text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white">
                         </div>
-                        <div style="margin-top: 10px; margin-left: 50px; margin-right: 50px" class="sm:flex items-center">
+                        <div style="margin-top: 15px;">
                             <label class="text-gray-600">Email:</label>
-                            <div style="margin-left: 15px;"></div>
-                            <input disabled type="text" size="101" name="email" value="{{$aluno->email}}" class="text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white mt-2">
+                            <input disabled type="text" name="email" value="{{$aluno->email}}" class="w-full text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white">
                         </div>
-                        <div style="margin-top: 10px; margin-left: 50px; margin-right: 50px" class="sm:flex items-center">
+                        <div style="margin-top: 15px;">
                             <label class="text-gray-600">Gênero:</label>
-                            <div style="margin-left: 15px;"></div>
-                            <input disabled type="text" size="99" name="gender" value="{{$aluno->gender}}" class="text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white mt-2">
+                            <input disabled type="text" name="gender" value="{{$aluno->gender}}" class="w-full text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white">
                         </div>
-                        <div style="margin-top: 10px; margin-left: 50px; margin-right: 50px" class="sm:flex items-center">
+                        <div style="margin-top: 15px;">
                             <label class="text-gray-600">Nascimento:</label>
-                            <div style="margin-left: 15px;"></div>
-                            <input disabled type="text" size="95" name="birthday" value="{{$aluno->birthday}}" class="text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white mt-2">
+                            <input disabled type="text" name="birthday" value="{{$aluno->birthday}}" class="w-full text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white">
                         </div>
-                        <div style="margin-top: 10px; margin-left: 50px; margin-right: 50px" class="sm:flex items-center">
+                        <div style="margin-top: 15px;">
                             <label class="text-gray-600">RG:</label>
-                            <div style="margin-left: 15px;"></div>
-                            <input disabled type="text" size="103" name="rg" value="{{$aluno->rg}}" class="text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white mt-2">
+                            <input disabled type="text" name="rg" value="{{$aluno->rg}}" class="w-full text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white">
                         </div>
-                        <div style="margin-top: 10px; margin-left: 50px; margin-right: 50px" class="sm:flex items-center">
+                        <div style="margin-top: 15px;">
                             <label class="text-gray-600">CPF:</label>
-                            <div style="margin-left: 15px;"></div>
-                            <input disabled type="text" size="102" name="cpf" value="{{$aluno->cpf}}" class="text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white mt-2">
+                            <input disabled type="text" name="cpf" value="{{$aluno->cpf}}" class="w-full text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white">
                         </div>
-                        <div style="margin-top: 10px; margin-left: 50px; margin-right: 50px" class="sm:flex items-center">
+                        <div style="margin-top: 15px;">
                             <label class="text-gray-600">Nacionalidade:</label>
-                            <div style="margin-left: 15px;"></div>
-                            <input disabled type="text" size="93" name="nationality" value="{{$aluno->nationality}}" class="text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white mt-2">
+                            <input disabled type="text" name="nationality" value="{{$aluno->nationality}}" class="w-full text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white">
                         </div>
-                        <div style="margin-top: 10px; margin-left: 50px; margin-right: 50px" class="sm:flex items-center">
+                        <div style="margin-top: 15px;">
                             <label class="text-gray-600">Estado Civil:</label>
-                            <div style="margin-left: 15px;"></div>
-                            <input disabled type="text" size="95" name="martial_status" value="{{$aluno->martial_status}}" class="text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white mt-2">
+                            <input disabled type="text" name="martial_status" value="{{$aluno->martial_status}}" class="w-full text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white">
                         </div>
-                        <div style="margin-top: 10px; margin-left: 50px; margin-right: 50px" class="sm:flex items-center">
+                        <div style="margin-top: 15px;">
                             <label class="text-gray-600">Necessidade Especial:</label>
-                            <div style="margin-left: 15px;"></div>
-                            <input disabled type="text" size="86" name="special_need" value="{{$aluno->special_need}}" class="text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white mt-2">
+                            <input disabled type="text" name="special_need" value="{{$aluno->special_need}}" class="w-full text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white">
                         </div>
-                        <div style="margin-top: 10px; margin-left: 50px; margin-right: 50px" class="sm:flex items-center">
+                        <div style="margin-top: 15px;">
                             <label class="text-gray-600">Renda Familiar:</label>
-                            <div style="margin-left: 15px;"></div>
-                            <input disabled type="text" size="92" name="family_income" value="R$ {{$aluno->family_income}}" class="text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white mt-2">
+                            <input disabled type="text" name="family_income" value="R$ {{$aluno->family_income}}" class="w-full text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white">
                         </div>
-                        <div style="margin-bottom: 15px;margin-top: 10px; margin-left: 50px; margin-right: 50px" class="sm:flex items-center">
-                            <label class="text-gray-600">Número de Membros na Família:</label>
-                            <div style="margin-left: 15px;"></div>
-                            <input disabled type="text" size="77" name="family_number" value="R$ {{$aluno->family_number}}" class="text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white mt-2">
+                        <div style="margin-top: 15px;">
+                            <label class="text-gray-600">Grupo Familiar:</label>
+                            <input disabled type="text" name="family_number" value="{{$aluno->family_number}}" class="w-full text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white">
                         </div>
+                        <div style="margin-bottom: 15px;"></div>
                     </div>
                 </div>
             </div>
-        </div>
 </x-app-layout>

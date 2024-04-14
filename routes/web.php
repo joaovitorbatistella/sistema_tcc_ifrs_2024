@@ -30,13 +30,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Route::resource('alunos', AlunosController::class);
-    Route::get('/alunos', [ProfessoresController::class, 'index'])->name('alunos-controller.index');
-    Route::get('/alunos/adicionar-aluno', [ProfessoresController::class, 'create'])->name('alunos-controller.create');
-    Route::post('/alunos', [ProfessoresController::class, 'store'])->name('alunos-controller.store');
-    Route::get('/alunos/{professor}', [ProfessoresController::class, 'show'])->name('alunos-controller.show');
-    Route::get('/alunos/{professor}/atualizar-professor', [ProfessoresController::class, 'edit'])->name('alunos-controller.edit');
-    Route::put('/alunos/{professor}', [ProfessoresController::class, 'update'])->name('alunos-controller.update');
-    Route::delete('/alunos/{professor}', [ProfessoresController::class, 'destroy'])->name('alunos-controller.destroy');
+    Route::get('/alunos', [AlunosController::class, 'index'])->name('alunos-controller.index');
+    Route::get('/alunos/adicionar-aluno', [AlunosController::class, 'create'])->name('alunos-controller.create');
+    Route::post('/alunos', [AlunosController::class, 'store'])->name('alunos-controller.store');
+    Route::get('/alunos/{aluno}', [AlunosController::class, 'show'])->name('alunos-controller.show');
+    Route::get('/alunos/{aluno}/atualizar-aluno', [AlunosController::class, 'edit'])->name('alunos-controller.edit');
+    Route::put('/alunos/{aluno}', [AlunosController::class, 'update'])->name('alunos-controller.update');
+    Route::delete('/alunos/{aluno}', [AlunosController::class, 'destroy'])->name('alunos-controller.destroy');
 
     // Route::resource('professores', ProfessoresController::class);
     Route::get('/professores', [ProfessoresController::class, 'index'])->name('professores-controller.index');
