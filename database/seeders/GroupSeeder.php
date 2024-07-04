@@ -53,5 +53,15 @@ class GroupSeeder extends Seeder
             'created_at'         => Carbon::now(),
             'updated_at'         => Carbon::now()
         ]);
+
+        DB::table('group')->insert([
+            'name'               => "Professor",
+            'able_to_create_tcc' => false,
+            'able_to_read_tcc'   => true,
+            'able_to_update_tcc' => false,
+            'able_to_delete_tcc' => false,
+            'created_at'         => Carbon::now(),
+            'updated_at'         => Carbon::now()
+        ]);
     }
 }

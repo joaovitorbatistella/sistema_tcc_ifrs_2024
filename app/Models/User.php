@@ -52,4 +52,20 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public static function students()
+    {
+        return User::select('users.*')
+                   ->join('user_group', 'users.id', '=', 'user_group.user_id')
+                   ->where('user_group.group_id', 4)
+                   ->get();
+    }
+
+    public static function teachers()
+    {
+        return User::select('users.*')
+                   ->join('user_group', 'users.id', '=', 'user_group.user_id')
+                   ->where('user_group.group_id', 5)
+                   ->get();
+    }
 }
