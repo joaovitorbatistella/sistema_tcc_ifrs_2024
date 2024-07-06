@@ -100,4 +100,25 @@ class AlunosController extends Controller
         $this->aluno->where('id', $id)->delete();
         return redirect()->route('alunos-controller.index');
     }
+
+    public function verificarRG(Request $request)
+    {
+        $rg = $request->input('rg');
+        $existeRG = User::where('rg', $rg)->exists();
+        return response()->json(['existe' => $existeRG]);
+    }
+
+    public function verificarCPF(Request $request)
+    {
+        $cpf = $request->input('cpf');
+        $existeCPF = User::where('cpf', $cpf)->exists();
+        return response()->json(['existe' => $existeCPF]);
+    }
+
+    public function verificarEmail(Request $request)
+    {
+        $email = $request->input('email');
+        $existeEmail = User::where('email', $email)->exists();
+        return response()->json(['existe' => $existeEmail]);
+    }
 }

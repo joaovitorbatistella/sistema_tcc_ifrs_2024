@@ -1,19 +1,25 @@
 <x-app-layout>
     <x-slot:header>
-            <div class="sm:flex justify-between items-center">
-                <div>
-                    <h2 class="font-semibold text-xl text-black">
-                        {{ __('Editar Aluno') }}
-                    </h2>
-                </div>
-                <div>
-                    <button type="button" class="bg-red-600 text-white text-lg font-bold py-1 px-2 border border-red-600 rounded">
-                        <a href="{{route('alunos-controller.index')}}">Cancelar</a>
-                    </button>
-                </div>
+        <div class="sm:flex justify-between items-center">
+            <div>
+                <h2 class="font-semibold text-xl text-black">
+                    {{ __('Editar Aluno') }}
+                </h2>
             </div>
+            <div>
+                <button type="button" class="bg-red-600 text-white text-lg font-bold py-1 px-2 border border-red-600 rounded">
+                    <a href="{{route('alunos-controller.index')}}">Cancelar</a>
+                </button>
+            </div>
+        </div>
         </x-slot>
 
+        <style>
+            .disabled-btn {
+                background-color: gray !important;
+                cursor: not-allowed;
+            }
+        </style>
 
         @if(session()->has('message'))
         {{ session()->get('message') }}
@@ -33,6 +39,7 @@
                                 <div style="margin-left: 10px;" class="relative z-0 w-full mb-5 group">
                                     <label class="text-gray-600">Email:</label>
                                     <input required type="text" name="email" value="{{$aluno->email}}" class="block py-2.5 peer w-full text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white mt-2">
+                                    <span id="emailError" style="color:red; display:none;">Email já existe!</span>
                                 </div>
                             </div>
                             <div style="margin-left: 20px; margin-right: 20px; margin-top:20px" class="grid md:grid-cols-2 md:gap-6">
@@ -55,10 +62,12 @@
                                     <div class="relative z-0 w-full mb-5 group">
                                         <label class="text-gray-600">RG:</label>
                                         <input required type="tel" name="rg" value="{{$aluno->rg}}" minlength="10" maxlength="10" pattern="[0-9]+$" class="block py-2.5 peer w-full text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white mt-2">
+                                        <span id="rgError" style="color:red; display:none;">RG já existe!</span>
                                     </div>
                                     <div style="margin-left:10px;" class="relative z-0 w-full mb-5 group">
                                         <label class="text-gray-600">CPF:</label>
                                         <input required type="tel" name="cpf" value="{{$aluno->cpf}}" minlength="11" maxlength="11" pattern="[0-9]+$" class="block py-2.5 peer w-full text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white mt-2">
+                                        <span id="cpfError" style="color:red; display:none;">CPF já existe!</span>
                                     </div>
                                 </div>
                             </div>
@@ -87,7 +96,7 @@
                                             <option>{{$aluno->special_need}}</option>
                                             <option value="Nao">Não</option>
                                             <option value="Sim">Sim</option>
-                                        </select>                                    
+                                        </select>
                                     </div>
                                     <div style="margin-left: 10px;" class="grid md:grid-cols-2 md:gap-6">
                                         <div class="relative z-0 w-full mb-5 group">
@@ -104,7 +113,7 @@
                             </div>
                         </div>
                         <div class="sm:flex justify-center">
-                            <button style="margin-top:30px; margin-bottom:15px" type="submit" class="bg-c-green text-white text-lg font-bold py-1 px-2 border rounded">
+                            <button id="submitBtn" style="margin-top:30px; margin-bottom:15px" type="submit" class="bg-c-green text-white text-lg font-bold py-1 px-2 border rounded">
                                 Atualizar
                             </button>
                         </div>
@@ -112,4 +121,83 @@
                 </div>
             </div>
         </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                const routes = {
+                    email: @json(route('verificar.email')),
+                    rg: @json(route('verificar.rg')),
+                    cpf: @json(route('verificar.cpf'))
+                };
+
+                function checkField(fieldName, errorSpan, routeName) {
+                    $('input[name="' + fieldName + '"]').on('keyup', function() {
+                        var fieldValue = $(this).val();
+
+                        $.ajax({
+                            url: routes[routeName],
+                            method: 'POST',
+                            data: {
+                                '_token': '{{ csrf_token() }}',
+                                [fieldName]: fieldValue
+                            },
+                            success: function(response) {
+                                if (response.existe) {
+                                    $('#' + errorSpan).show();
+                                    $('#submitBtn').prop('disabled', true).addClass('disabled-btn');
+                                } else {
+                                    $('#' + errorSpan).hide();
+                                    checkAllFields();
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(error);
+                            }
+                        });
+                    });
+                }
+
+                checkField('email', 'emailError', 'email');
+                checkField('rg', 'rgError', 'rg');
+                checkField('cpf', 'cpfError', 'cpf');
+
+                function checkAllFields() {
+                    var emailValue = $('input[name="email"]').val();
+                    var rgValue = $('input[name="rg"]').val();
+                    var cpfValue = $('input[name="cpf"]').val();
+
+                    $.when(
+                        $.ajax({
+                            url: routes.email,
+                            method: 'POST',
+                            data: {
+                                '_token': '{{ csrf_token() }}',
+                                'email': emailValue
+                            }
+                        }),
+                        $.ajax({
+                            url: routes.rg,
+                            method: 'POST',
+                            data: {
+                                '_token': '{{ csrf_token() }}',
+                                'rg': rgValue
+                            }
+                        }),
+                        $.ajax({
+                            url: routes.cpf,
+                            method: 'POST',
+                            data: {
+                                '_token': '{{ csrf_token() }}',
+                                'cpf': cpfValue
+                            }
+                        })
+                    ).done(function(responseEmail, responseRG, responseCPF) {
+                        if (!responseEmail[0].existe && !responseRG[0].existe && !responseCPF[0].existe) {
+                            $('#submitBtn').prop('disabled', false).removeClass('disabled-btn');
+                        }
+                    });
+                }
+            });
+        </script>
 </x-app-layout>
