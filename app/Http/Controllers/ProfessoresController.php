@@ -102,22 +102,31 @@ class ProfessoresController extends Controller
 
     public function verificarRG(Request $request)
     {
+        $id = $request->input('id');
         $rg = $request->input('rg');
-        $existeRG = User::where('rg', $rg)->exists();
+        $existeRG = User::where('rg', $rg)
+                        ->where('id', '!=', $id)
+                        ->exists();
         return response()->json(['existe' => $existeRG]);
     }
 
     public function verificarCPF(Request $request)
     {
+        $id = $request->input('id');
         $cpf = $request->input('cpf');
-        $existeCPF = User::where('cpf', $cpf)->exists();
+        $existeCPF = User::where('cpf', $cpf)
+                        ->where('id', '!=', $id)
+                        ->exists();
         return response()->json(['existe' => $existeCPF]);
     }
 
     public function verificarEmail(Request $request)
     {
+        $id = $request->input('id');
         $email = $request->input('email');
-        $existeEmail = User::where('email', $email)->exists();
+        $existeEmail = User::where('email', $email)
+                        ->where('id', '!=', $id)
+                        ->exists();
         return response()->json(['existe' => $existeEmail]);
     }
 }

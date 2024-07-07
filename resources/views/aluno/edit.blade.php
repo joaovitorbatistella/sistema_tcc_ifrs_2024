@@ -32,6 +32,7 @@
                         <input type="hidden" name="_method" value="PUT">
                         <div style="margin-top: 15px;">
                             <div style="margin-left: 20px; margin-right: 20px;" class="grid md:grid-cols-2 md:gap-6">
+                                <input type="hidden" name="id" value="{{$aluno->id}}">
                                 <div class="relative z-0 w-full mb-5 group">
                                     <label class="text-gray-600">Nome:</label>
                                     <input type="text" name="name" value="{{$aluno->name}}" class="block py-2.5 peer w-full text-gray-600 bg-gray-300 p-2 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white mt-2">
@@ -134,14 +135,16 @@
                 function checkField(fieldName, errorSpan, routeName) {
                     $('input[name="' + fieldName + '"]').on('keyup', function() {
                         var fieldValue = $(this).val();
+                        var data = {
+                            '_token': '{{ csrf_token() }}',
+                            [fieldName]: fieldValue,
+                            'id': $('input[name="id"]').val() // Adiciona o ID do usuário em todas as verificações
+                        };
 
                         $.ajax({
                             url: routes[routeName],
                             method: 'POST',
-                            data: {
-                                '_token': '{{ csrf_token() }}',
-                                [fieldName]: fieldValue
-                            },
+                            data: data,
                             success: function(response) {
                                 if (response.existe) {
                                     $('#' + errorSpan).show();
@@ -173,7 +176,8 @@
                             method: 'POST',
                             data: {
                                 '_token': '{{ csrf_token() }}',
-                                'email': emailValue
+                                'email': emailValue,
+                                'id': $('input[name="id"]').val() // Adiciona o ID do usuário para a verificação de email
                             }
                         }),
                         $.ajax({
@@ -181,7 +185,8 @@
                             method: 'POST',
                             data: {
                                 '_token': '{{ csrf_token() }}',
-                                'rg': rgValue
+                                'rg': rgValue,
+                                'id': $('input[name="id"]').val() // Adiciona o ID do usuário para a verificação de RG
                             }
                         }),
                         $.ajax({
@@ -189,7 +194,8 @@
                             method: 'POST',
                             data: {
                                 '_token': '{{ csrf_token() }}',
-                                'cpf': cpfValue
+                                'cpf': cpfValue,
+                                'id': $('input[name="id"]').val() // Adiciona o ID do usuário para a verificação de CPF
                             }
                         })
                     ).done(function(responseEmail, responseRG, responseCPF) {
