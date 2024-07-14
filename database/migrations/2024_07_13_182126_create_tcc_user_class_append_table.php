@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+        Schema::create('tcc_user_class_append', function (Blueprint $table) {
+            $table->bigIncrements('tcc_user_class_append_id');
+            $table->unsignedBigInteger('append_id');
+            $table->unsignedBigInteger('user_id');
             $table->dateTime('created_at');
             $table->dateTime('updated_at');
+
+            $table->foreign('append_id')->references('append_id')->on('append');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('tcc_user_class_append');
     }
 };

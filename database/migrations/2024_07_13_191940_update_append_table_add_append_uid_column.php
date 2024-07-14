@@ -11,12 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tcc_type', function (Blueprint $table) {
-            $table->increments('tcc_type_id');
-            $table->string('name', 15);
-            $table->dateTime('created_at');
-            $table->dateTime('updated_at');
-        });
+        //
     }
 
     /**
@@ -24,6 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tcc_type');
+        //
     }
 };

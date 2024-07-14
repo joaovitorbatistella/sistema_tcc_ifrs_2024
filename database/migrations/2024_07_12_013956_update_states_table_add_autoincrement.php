@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -11,12 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tcc_type', function (Blueprint $table) {
-            $table->increments('tcc_type_id');
-            $table->string('name', 15);
-            $table->dateTime('created_at');
-            $table->dateTime('updated_at');
-        });
+        DB::statement("ALTER TABLE states MODIFY COLUMN id int(10) unsigned auto_increment NOT NULL");
     }
 
     /**
@@ -24,6 +20,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tcc_type');
+        //
     }
 };

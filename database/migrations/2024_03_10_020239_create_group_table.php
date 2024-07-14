@@ -18,7 +18,8 @@ return new class extends Migration
             $table->boolean('able_to_read_tcc')->default(false);
             $table->boolean('able_to_update_tcc')->default(false);
             $table->boolean('able_to_delete_tcc')->default(false);
-            $table->timestamps();
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at');
         });
     }
 

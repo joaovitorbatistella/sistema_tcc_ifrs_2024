@@ -11,15 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
+        Schema::create('append', function (Blueprint $table) {
+            $table->bigIncrements('append_id');
             $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedInteger('type_id');
+            $table->boolean('public');
+            $table->string('path');
             $table->dateTime('created_at');
             $table->dateTime('updated_at');
+
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('type_id')->references('append_type_id')->on('append_type');
         });
     }
 
@@ -28,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('append');
     }
 };

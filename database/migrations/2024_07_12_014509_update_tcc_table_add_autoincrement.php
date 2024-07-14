@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -11,11 +12,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tcc_type', function (Blueprint $table) {
-            $table->increments('tcc_type_id');
-            $table->string('name', 15);
-            $table->dateTime('created_at');
-            $table->dateTime('updated_at');
+        Schema::table('append', function (Blueprint $table) {
+            $table->string('append_uid', 13)->after('append_id');
         });
     }
 
@@ -24,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tcc_type');
+        Schema::table('append', function (Blueprint $table) {
+            $table->dropColumn('append_uid');
+        });
     }
 };
