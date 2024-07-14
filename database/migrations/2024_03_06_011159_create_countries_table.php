@@ -14,7 +14,8 @@ return new class extends Migration
             $table->char('id',2)->primary();
             $table->char('name',60);
             $table->char('phoneCode',10);
-            $table->timestamps();
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at');
         });
       }
 

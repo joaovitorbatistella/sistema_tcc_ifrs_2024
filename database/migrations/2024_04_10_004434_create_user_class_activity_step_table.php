@@ -18,7 +18,8 @@ return new class extends Migration
             $table->boolean('completed')->default(false);
             $table->string('notes')->nullable();
             $table->date('delivered_at')->nullable();
-            $table->timestamps();
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at');
             $table->foreign('user_class_activity_id')->references('user_class_activity_id')->on('user_class_activity');
         });
     }

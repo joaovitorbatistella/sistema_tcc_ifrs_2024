@@ -4,23 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\UserGroup;
 
 use function Laravel\Prompts\alert;
 
 class ProfessoresController extends Controller
 {
-    public readonly User $professor;
 
-    public function __construct()
-    {
-        $this->professor = new User();
-    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $professores = $this->professor->all();
+        $professores = User::teachers();
+
         return view('professor.index',['professores' => $professores]);
     }
 
@@ -37,7 +34,7 @@ class ProfessoresController extends Controller
      */
     public function store(Request $request)
     {
-        $created = $this->professor->create([
+        $created = User::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'course' => $request->input('course'),
@@ -54,6 +51,11 @@ class ProfessoresController extends Controller
         ]);
 
         if($created){
+            UserGroup::create([
+                'user_id'  => $created->id,
+                'group_id' => 5
+            ]);
+
             alert('Criado Com Sucesso');
             return redirect()->route('professores-controller.index');
         }
@@ -81,7 +83,7 @@ class ProfessoresController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $updated = $this->professor->where('id', $id)->update($request->except(['_token', '_method']));
+        $updated = User::where('id', $id)->update($request->except(['_token', '_method']));
 
         if($updated){
             alert('Atualizado Com Sucesso');
@@ -96,7 +98,7 @@ class ProfessoresController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->professor->where('id', $id)->delete();
+        User::where('id', $id)->delete();
         return redirect()->route('professores-controller.index');
     }
 

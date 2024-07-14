@@ -17,7 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('userd_id');
             $table->foreign('tcc_class_id')->references('tcc_class_id')->on('tcc_class');
             $table->foreign('userd_id')->references('id')->on('users');
-            $table->timestamps();
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at');
         });
     }
 

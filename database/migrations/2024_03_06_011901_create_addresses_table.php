@@ -21,7 +21,8 @@ return new class extends Migration
             $table->char('country_id',2);
             $table->unsignedInteger('state_id');
             $table->unsignedInteger('city_id');
-            $table->timestamps();
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at');
             $table->softDeletes();
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('country_id')->references('id')->on('countries');

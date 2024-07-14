@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('tcc_type', function (Blueprint $table) {
             $table->increments('tcc_type_id');
             $table->string('name', 15);
-            $table->timestamps();
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at');
         });
     }
 
