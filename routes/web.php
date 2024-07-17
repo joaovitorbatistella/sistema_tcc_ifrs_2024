@@ -4,6 +4,7 @@ use App\Http\Controllers\AlunosController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfessoresController;
+use App\Http\Controllers\TurmasController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,6 +47,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/professores/{professor}/atualizar-professor', [ProfessoresController::class, 'edit'])->name('professores-controller.edit');
     Route::put('/professores/{professor}', [ProfessoresController::class, 'update'])->name('professores-controller.update');
     Route::delete('/professores/{professor}', [ProfessoresController::class, 'destroy'])->name('professores-controller.destroy');
+
+    Route::get('/turmas', [TurmasController::class, 'index'])->name('turmas-controller.index');
+    Route::get('/turmas/cadastro', [TurmasController::class, 'index']);
+    Route::post('/turmas/store', [TurmasController::class, 'store'])->name('turmas.store');
+    Route::post('/turmas/cadastro/step1', [TurmasController::class, 'step1']);
+    Route::post('/turmas/cadastro/step2', [TurmasController::class, 'step2']);   
+    Route::post('/turmas/cadastro/step3', [TurmasController::class, 'step3']);
+
+
+    Route::get('/getAlunos', [AlunosController::class, 'getAlunos']); 
+    
 });
 
 require __DIR__.'/auth.php';
