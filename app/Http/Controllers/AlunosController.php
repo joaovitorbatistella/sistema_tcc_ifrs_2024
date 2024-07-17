@@ -4,24 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\UserGroup;
 
 use function Laravel\Prompts\alert;
 use function Laravel\Prompts\info;
 
 class AlunosController extends Controller
 {
-    public readonly User $aluno;
-
-    public function __construct()
-    {
-        $this->aluno = new User();
-    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $alunos = $this->aluno->all();
+        $alunos = User::students();
         return view('aluno.index',['alunos' => $alunos]);
     }
 
@@ -38,7 +33,7 @@ class AlunosController extends Controller
      */
     public function store(Request $request)
     {
-        $created = $this->aluno->create([
+        $created = User::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'course' => $request->input('course'),
@@ -55,6 +50,11 @@ class AlunosController extends Controller
         ]);
 
         if($created){
+            UserGroup::create([
+                'user_id'  => $created->id,
+                'group_id' => 4
+            ]);
+
             alert('Criado Com Sucesso');
             return redirect()->route('alunos-controller.index');
         }
@@ -82,7 +82,7 @@ class AlunosController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $updated = $this->aluno->where('id', $id)->update($request->except(['_token', '_method']));
+        $updated = User::where('id', $id)->update($request->except(['_token', '_method']));
 
         if($updated){
             alert('Atualizado Com Sucesso');
@@ -97,7 +97,37 @@ class AlunosController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->aluno->where('id', $id)->delete();
+        User::where('id', $id)->delete();
         return redirect()->route('alunos-controller.index');
+    }
+
+    public function verificarRG(Request $request)
+    {
+        $id = $request->input('id');
+        $rg = $request->input('rg');
+        $existeRG = User::where('rg', $rg)
+                        ->where('id', '!=', $id)
+                        ->exists();
+        return response()->json(['existe' => $existeRG]);
+    }
+
+    public function verificarCPF(Request $request)
+    {
+        $id = $request->input('id');
+        $cpf = $request->input('cpf');
+        $existeCPF = User::where('cpf', $cpf)
+                        ->where('id', '!=', $id)
+                        ->exists();
+        return response()->json(['existe' => $existeCPF]);
+    }
+
+    public function verificarEmail(Request $request)
+    {
+        $id = $request->input('id');
+        $email = $request->input('email');
+        $existeEmail = User::where('email', $email)
+                        ->where('id', '!=', $id)
+                        ->exists();
+        return response()->json(['existe' => $existeEmail]);
     }
 }

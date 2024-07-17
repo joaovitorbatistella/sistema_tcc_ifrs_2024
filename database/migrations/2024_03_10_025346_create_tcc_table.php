@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('name');
             $table->enum('status', ['in_progress', 'stopped', 'approved', 'completed']);
             $table->foreign('user_id')->references('id')->on('users');
-            $table->timestamps();
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at');
         });
     }
 

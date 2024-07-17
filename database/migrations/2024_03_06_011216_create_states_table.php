@@ -14,7 +14,8 @@ return new class extends Migration
             $table->unsignedInteger('id')->primary();
             $table->char('country_id',2);
             $table->char('name',60);
-            $table->timestamps();
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at');
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade')->onUpdate('cascade');
         });
     }

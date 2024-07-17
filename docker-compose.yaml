@@ -15,6 +15,10 @@ services:
       - ./:/var/www
     networks:
       - laravel
+    depends_on: 
+      - nginx
+      - db
+      - redis
 
   db:
     image: mariadb:lts
@@ -44,6 +48,15 @@ services:
     volumes:
       - ./:/var/www
       - ./.docker-compose/nginx:/etc/nginx/conf.d/
+    networks:
+      - laravel
+
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6389:6379"
+    command: redis-server --save 20 1 --loglevel warning
     networks:
       - laravel
 

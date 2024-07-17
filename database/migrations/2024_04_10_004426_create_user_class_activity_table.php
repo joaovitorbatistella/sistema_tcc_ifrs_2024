@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->date('due_date')->nullable();
             $table->date('delivered_at')->nullable();
-            $table->timestamps();
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at');
             $table->foreign('user_class_id')->references('user_class_id')->on('user_class');
         });
     }

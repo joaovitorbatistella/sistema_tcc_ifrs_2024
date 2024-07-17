@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfessoresController;
 use App\Http\Controllers\TurmasController;
+use App\Http\Controllers\ClassController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,6 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Route::resource('alunos', AlunosController::class);
+    Route::post('/verificar-rg', [AlunosController::class, 'verificarRG'])->name('verificar.rg');
+    Route::post('/verificar-cpf', [AlunosController::class, 'verificarCPF'])->name('verificar.cpf');
+    Route::post('/verificar-email', [AlunosController::class, 'verificarEmail'])->name('verificar.email');
     Route::get('/alunos', [AlunosController::class, 'index'])->name('alunos-controller.index');
     Route::get('/alunos/adicionar-aluno', [AlunosController::class, 'create'])->name('alunos-controller.create');
     Route::post('/alunos', [AlunosController::class, 'store'])->name('alunos-controller.store');
@@ -40,6 +44,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/alunos/{aluno}', [AlunosController::class, 'destroy'])->name('alunos-controller.destroy');
 
     // Route::resource('professores', ProfessoresController::class);
+    Route::post('/verificar-rg', [ProfessoresController::class, 'verificarRG'])->name('verificar.rg');
+    Route::post('/verificar-cpf', [ProfessoresController::class, 'verificarCPF'])->name('verificar.cpf');
+    Route::post('/verificar-email', [ProfessoresController::class, 'verificarEmail'])->name('verificar.email');
     Route::get('/professores', [ProfessoresController::class, 'index'])->name('professores-controller.index');
     Route::get('/professores/adicionar-professor', [ProfessoresController::class, 'create'])->name('professores-controller.create');
     Route::post('/professores', [ProfessoresController::class, 'store'])->name('professores-controller.store');
@@ -58,6 +65,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/getAlunos', [AlunosController::class, 'getAlunos']); 
     
+    Route::get('/classes', [ClassController::class, 'index'])->name('class-controller.index');
+    Route::post('/classes/create', [ClassController::class, 'store'])->name('class-controller.store');
 });
 
 require __DIR__.'/auth.php';

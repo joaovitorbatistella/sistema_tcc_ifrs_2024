@@ -16,7 +16,8 @@ return new class extends Migration
             $table->unsignedInteger('tcc_type_id');
             $table->unsignedBigInteger('tcc_id');
             $table->enum('status', ['in_progress', 'stopped', 'cancelled', 'completed']);
-            $table->timestamps();
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at');
             $table->foreign('tcc_type_id')->references('tcc_type_id')->on('tcc_type');
             $table->foreign('tcc_id')->references('tcc_id')->on('tcc');
         });
