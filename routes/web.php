@@ -56,6 +56,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/classes', [ClassController::class, 'index'])->name('class-controller.index');
     Route::post('/classes/create', [ClassController::class, 'store'])->name('class-controller.store');
+
+    Route::get('/biblioteca', function () {
+        return view('biblioteca');
+    })->middleware(['auth', 'verified'])->name('biblioteca');
 });
 
 require __DIR__.'/auth.php';
