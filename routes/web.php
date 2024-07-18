@@ -4,6 +4,7 @@ use App\Http\Controllers\AlunosController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfessoresController;
+use App\Http\Controllers\TurmasController;
 use App\Http\Controllers\ClassController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +43,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/alunos/{aluno}', [AlunosController::class, 'update'])->name('alunos-controller.update');
     Route::delete('/alunos/{aluno}', [AlunosController::class, 'destroy'])->name('alunos-controller.destroy');
 
+    Route::group(['prefix' => 'api'], function() {
+        Route::get('/alunos/list', [AlunosController::class, 'list'])->name('alunos-controller-list');
+    });
+
     // Route::resource('professores', ProfessoresController::class);
     Route::post('/verificar-rg', [ProfessoresController::class, 'verificarRG'])->name('verificar.rg');
     Route::post('/verificar-cpf', [ProfessoresController::class, 'verificarCPF'])->name('verificar.cpf');
@@ -54,6 +59,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/professores/{professor}', [ProfessoresController::class, 'update'])->name('professores-controller.update');
     Route::delete('/professores/{professor}', [ProfessoresController::class, 'destroy'])->name('professores-controller.destroy');
 
+    Route::get('/turmas', [TurmasController::class, 'index'])->name('turmas-controller.index');
+    Route::post('/turmas/cadastro/step1', [TurmasController::class, 'step1']);
+    Route::post('/turmas/cadastro/step2', [TurmasController::class, 'step2']);   
+    Route::post('/turmas/cadastro/step3', [TurmasController::class, 'step3']);
+    
     Route::get('/classes', [ClassController::class, 'index'])->name('class-controller.index');
     Route::post('/classes/create', [ClassController::class, 'store'])->name('class-controller.store');
 });

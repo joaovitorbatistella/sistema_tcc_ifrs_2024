@@ -130,4 +130,11 @@ class AlunosController extends Controller
                         ->exists();
         return response()->json(['existe' => $existeEmail]);
     }
+
+    public function list(Request $request) {
+        return response()->json([
+            "success" => true,
+            "data"  => User::students()
+        ]);
+    }
 }
