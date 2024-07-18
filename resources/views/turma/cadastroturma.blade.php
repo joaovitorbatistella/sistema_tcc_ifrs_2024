@@ -153,11 +153,12 @@
                             }
 
                             function loadAlunos() {
-                                $.get('/getAlunos', function(data) {
-                                    if (data.status === 'success') {
+                                $.get('/api/alunos/list', function(data) {
+                                    console.log('data', data)
+                                    if (data.success) {
                                         var alunosSelect = $('#alunos');
                                         alunosSelect.empty();
-                                        data.alunos.forEach(function(aluno) {
+                                        data.data.forEach(function(aluno) {
                                             alunosSelect.append(new Option(aluno.name, aluno.id));
                                         });
                                     } else {
@@ -180,10 +181,10 @@
                                 if (nome && descricao && prazo && arquivo) {
                                     var atividade = {
                                         id: atividadeCount,
-                                        nome: nome,
-                                        descricao: descricao,
-                                        prazo: prazo,
-                                        arquivo: arquivo
+                                        name: nome,
+                                        description: descricao,
+                                        due_at: prazo,
+                                        file: arquivo
                                     };
                                     atividades.push(atividade);
                                     renderListaAtividades();
@@ -204,7 +205,7 @@
                                 listaAtividadesDiv.innerHTML = '';
 
                                 atividades.forEach(function(atividade) {
-                                    var prazoDate = new Date(atividade.prazo.replace('T', ' '));
+                                    var prazoDate = new Date(atividade.due_at.replace('T', ' '));
                                     var prazoFormatado = prazoDate.toLocaleDateString('pt-BR', { 
                                         year: 'numeric', 
                                         month: '2-digit', 
@@ -220,9 +221,9 @@
                                     atividadeDiv.innerHTML = `
                                         <div class="flex justify-between">
                                             <div>
-                                                <p><strong>Nome:</strong> ${atividade.nome}</p>
+                                                <p><strong>Nome:</strong> ${atividade.name}</p>
                                                 <p><strong>Prazo:</strong> ${prazoFormatado}</p>
-                                                <p><strong>Arquivo:</strong> ${atividade.arquivo.name}</p>
+                                                <p><strong>Arquivo:</strong> ${atividade.file.name}</p>
                                             </div>
                                             <div class="space-x-2">
                                                 <button style="color:orange" type="button" class="text-gray-500 hover:text-gray-900" onclick="editarAtividade(${atividade.id})">
@@ -246,9 +247,9 @@
                                 });
 
                                 if (atividade) {
-                                    document.getElementById('atividade_nome').value = atividade.nome;
-                                    document.getElementById('atividade_descricao').value = atividade.descricao;
-                                    document.getElementById('atividade_prazo').value = atividade.prazo;
+                                    document.getElementById('atividade_nome').value = atividade.name;
+                                    document.getElementById('atividade_descricao').value = atividade.description;
+                                    document.getElementById('atividade_prazo').value = atividade.due_at;
                                     document.getElementById('atividade_arquivo').value = null; // Limpar o arquivo selecionado
                                     excluirAtividade(id); // Remove a atividade da lista para ser adicionada novamente após edição
                                 }
@@ -262,32 +263,32 @@
                             }
 
                             function submitForm() {
-                                formData.atividades = atividades;
+                                formData.activities = atividades;
 
                                 console.log(formData);
 
                                 // Criar um objeto FormData para enviar os arquivos
                                 var formToSubmit = new FormData();
-                                formToSubmit.append('semestre', formData.semestre);
-                                formToSubmit.append('ano', formData.ano);
+                                formToSubmit.append('semester', formData.semestre);
+                                formToSubmit.append('year', formData.ano);
                                 formData.alunos.forEach(function(aluno, index) {
-                                    formToSubmit.append('alunos[]', aluno);
+                                    formToSubmit.append('students[]', aluno);
                                 });
-                                formData.atividades.forEach(function(atividade, index) {
-                                    formToSubmit.append('atividades[' + index + '][nome]', atividade.nome);
-                                    formToSubmit.append('atividades[' + index + '][descricao]', atividade.descricao);
-                                    formToSubmit.append('atividades[' + index + '][prazo]', atividade.prazo);
-                                    formToSubmit.append('atividades[' + index + '][arquivo]', atividade.arquivo);
+                                formData.activities.forEach(function(atividade, index) {
+                                    formToSubmit.append('activities[' + index + '][name]', atividade.name);
+                                    formToSubmit.append('activities[' + index + '][description]', atividade.description);
+                                    formToSubmit.append('activities[' + index + '][due_at]', atividade.due_at);
+                                    formToSubmit.append('activities[' + index + '][file]', atividade.file);
                                 });
 
                                 $.ajax({
-                                    url: '/criarTurma',
+                                    url: '/classes/create',
                                     type: 'POST',
                                     data: formToSubmit,
                                     contentType: false,
                                     processData: false,
                                     success: function(response) {
-                                        if (response.status === 'success') {
+                                        if (response.success) {
                                             alert('Turma criada com sucesso');
                                             location.reload();
                                         } else {

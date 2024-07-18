@@ -25,14 +25,35 @@ class ClassController extends Controller
         $this->tccService = $tccService;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $students = User::students();
+        return view('turma.cadastroturma');
+    }
 
-        return view('classes.index', ['students' => $students, 'user_id' => Auth::id()]);
+    function step1(Request $request)
+    {
+        /*array_push(
+            $values, 
+            $request->input('semestre'),
+            $request->input('ano'),
+            $request->input('coordenador')
+    );*/
+
+        return response()->json(['status' => 'success', 'next' => 'step2']);
+    }
+
+    function step2(Request $request)
+    {
+    
+
+        return response()->json(['status' => 'success', 'next' => 'step3']);
+    }
+
+    function step3(Request $request)
+    {
+    
+
+        return response()->json(['status' => 'success', 'next' => 'finished']);
     }
 
     /**
@@ -49,38 +70,38 @@ class ClassController extends Controller
     public function store(Request $request)
     {
         try {
-            $request->validate([
-                'file_1'  => 'mimes:pdf,jpg,png|max:2048',
-                'file_2'  => 'mimes:pdf,jpg,png|max:2048',
-                'file_3'  => 'mimes:pdf,jpg,png|max:2048',
-                'file_4'  => 'mimes:pdf,jpg,png|max:2048',
-                'file_5'  => 'mimes:pdf,jpg,png|max:2048'
-            ]);
+            // $request->validate([
+            //     'file_1'  => 'mimes:pdf,jpg,png|max:2048',
+            //     'file_2'  => 'mimes:pdf,jpg,png|max:2048',
+            //     'file_3'  => 'mimes:pdf,jpg,png|max:2048',
+            //     'file_4'  => 'mimes:pdf,jpg,png|max:2048',
+            //     'file_5'  => 'mimes:pdf,jpg,png|max:2048'
+            // ]);
 
             $data = [];
-            $activities = [];
+            // $activities = [];
             $students    = $request->get('students');
             // $user_id     = $request->get('user_id');
-            $class_name  = $request->get('class_name');
+            $class_name  = $request->get('year')."/".$request->get('semester');
 
-            foreach ($request->all() as $key => $value) {
-                if(preg_match("/.+(_\d)$/", $key)) {
-                    $new_key = preg_replace("/_\d/", "", $key);
+            // foreach ($request->all() as $key => $value) {
+            //     if(preg_match("/.+(_\d)$/", $key)) {
+            //         $new_key = preg_replace("/_\d/", "", $key);
 
-                    $activities[(int) mb_substr($key, -1)][$new_key] =  $value;
-                }
-            }
+            //         $activities[(int) mb_substr($key, -1)][$new_key] =  $value;
+            //     }
+            // }
 
-            foreach ($activities as $key => $activity) {
-                if(ArrayHelper::containsOnlyNull($activity)) {
-                    unset($activities[$key]);
-                }
-            }
+            // foreach ($activities as $key => $activity) {
+            //     if(ArrayHelper::containsOnlyNull($activity)) {
+            //         unset($activities[$key]);
+            //     }
+            // }
 
             $user_id            = Auth::id();
             $data['class_name'] = $class_name;
             $data['students']   = $students;
-            $data['activities'] = $activities;
+            $data['activities'] = $request->only('activities')['activities'];
 
             foreach ($data['activities'] as $key => $activity) {
                 if(!isset($activity['file'])) continue;
@@ -158,7 +179,6 @@ class ClassController extends Controller
                 $queue_process->approved_at = now();
                 $queue_process->saveQuietly();
             }
-
 
             return response()->json([
                 "success"   => true,
