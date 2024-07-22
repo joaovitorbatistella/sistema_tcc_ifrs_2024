@@ -147,9 +147,7 @@
             </style>
 
         <div>
-            <table>
-                
-            </table>
+                    
         </div>
 
         
