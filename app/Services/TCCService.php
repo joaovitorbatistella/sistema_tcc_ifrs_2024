@@ -109,12 +109,6 @@ class TCCService implements ITCCService
 
             foreach ($activities as $activity) {    
                 $activity = (object) $activity;
-                
-                if(isset($activity->due_at)) {
-                    $activity->due_at = Carbon::createFromFormat('Y-m-d\TH:i', $activity->due_at)
-                                              ->format('Y-m-d h:i:s');
-                }
-                
                                             
                 $user_class_activity = UserClassActivity::create([
                                            'user_class_id' => $user_class_id,
@@ -125,29 +119,32 @@ class TCCService implements ITCCService
 
                 if(!isset($user_class_activity)) throw new ObjectNotFound("User Class Activity not found");
 
-                if(isset($activity->file)) {
-                    $append = (object)
-                        $this->append_service->createAppend(
-                                                $activity->file['path'],
-                                                $activity->file['name'],
-                                                FileHelper::getSlugTypeByExtension(
-                                                                $activity->file['extension']
-                                                            ),
-                                                $user_id,
-                                                false
-                                            );
-                                            
-                    Log::info('append', [$append]);
+                if(isset($activity->files)) {
 
-                    if(!isset($append)) throw new \Exception("Error create append");
+                    foreach ($activity->files as $file) {
+                        $append = (object)
+                            $this->append_service->createAppend(
+                                                    $file['path'],
+                                                    $file['name'],
+                                                    FileHelper::getSlugTypeByExtension(
+                                                                    $file['extension']
+                                                                ),
+                                                    $user_id,
+                                                    false
+                                                );
+                                                
+                        Log::info('append', [$append]);
 
-                    $user_class_activity_append = 
-                            UserClassActivityAppend::create([
-                                'user_class_activity_id' => $user_class_activity->user_class_activity_id,
-                                'append_id'              => $append->append_id,
-                            ]);      
-                            
-                    if(!isset($user_class_activity_append)) throw new \Exception("Error user_class_activity_append");
+                        if(!isset($append)) throw new \Exception("Error create append");
+
+                        $user_class_activity_append = 
+                                UserClassActivityAppend::create([
+                                    'user_class_activity_id' => $user_class_activity->user_class_activity_id,
+                                    'append_id'              => $append->append_id,
+                                ]);      
+                                
+                        if(!isset($user_class_activity_append)) throw new \Exception("Error user_class_activity_append");
+                    }
                 }
 
             }
@@ -157,11 +154,7 @@ class TCCService implements ITCCService
             ];
 
         } catch (\Exception $e) {
-            return [
-                "error" => $e->getMessage(),
-                "file"  => $e->getFile(),
-                "line"  => $e->getLine(),
-            ];
+            throw $e;
         } catch (ObjectNotFound $e) {
             return [
                 "error" => $e->getMessage()

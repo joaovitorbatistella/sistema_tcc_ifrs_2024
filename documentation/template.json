@@ -1,0 +1,24 @@
+{
+    "name": "template name",
+    "start_date": "2024-07-25T00:00",
+    "activities": [
+      {
+        "name": "dasdas",
+        "description": "dsadsad",
+        "due_at": "2024-07-28T00:00",
+        "humanized_time": "2-week",
+        "files": [
+          {
+            "type_id": "2",
+            "path": "/var/www/..."
+          }
+        ],
+        "steps": [
+          {
+            "name": "Step 1",
+            "notes": "custom note"
+          }
+        ]
+      }
+    ]
+  }

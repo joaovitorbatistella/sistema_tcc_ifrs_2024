@@ -9,6 +9,10 @@ use App\Services\AppendService;
 use App\Services\Contracts\ITCCService;
 use App\Services\Contracts\IAppendService;
 
+use App\Observers\AppendObserver;
+
+use App\Models\Append;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -25,6 +29,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Append::observe(AppendObserver::class);
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfessoresController;
 use App\Http\Controllers\TurmasController;
 use App\Http\Controllers\ClassController;
+use App\Http\Controllers\TemplateController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,6 +46,7 @@ Route::middleware('auth')->group(function () {
 
     Route::group(['prefix' => 'api'], function() {
         Route::get('/alunos/list', [AlunosController::class, 'list'])->name('alunos-controller-list');
+        Route::get('/templates/list', [TemplateController::class, 'list'])->name('template-controller-list');
     });
 
     // Route::resource('professores', ProfessoresController::class);
