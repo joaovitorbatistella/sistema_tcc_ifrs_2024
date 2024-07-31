@@ -78,10 +78,23 @@
                                                         </div>
                                                     </div>
                                                 </form>
-                                                <button type="button" class="bg-gray-500 text-white text-lg font-bold py-1 px-2 border border-gray-500 rounded mt-4" onclick="adicionarAtividade()">Adicionar Atividade</button>
+                                                <button type="button" id="addActivity" class="bg-gray-500 text-white text-lg font-bold py-1 px-2 border border-gray-500 rounded mt-4" onclick="adicionarAtividade()">Adicionar Atividade</button>
+                                                <button type="button" id="addImport" class="bg-gray-500 text-white text-lg font-bold py-1 px-2 border border-gray-500 rounded mt-4" onclick="importTemplate()">Importar template</button>
                                                 <div class="flex justify-end space-x-4 mt-4">
                                                     <button type="button" class="bg-red-500 text-white text-lg font-bold py-1 px-2 border border-red-500 rounded" onclick="prevStep(3)">Voltar</button>
                                                     <button type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 border border-c-green rounded" onclick="submitForm()">Finalizar</button>
+                                                </div>
+
+                                                <div id="myModal" class="custom-modal">
+
+                                                    <!-- Modal content -->
+                                                    <div class="custom-modal-content">
+                                                        <span onclick="closeTemplateSelector()" class="custom-close">&times;</span>
+                                                        <div id="templates" class="modal-body template-box">
+                                                        
+                                                        </div>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                             <div id="listaAtividades" class="mt-4 space-y-4">
@@ -115,7 +128,8 @@
                                 semestre: '',
                                 ano: '',
                                 alunos: [],
-                                atividades: []
+                                atividades: [],
+                                template: null
                             };
 
                             function nextStep(step) {
@@ -148,6 +162,17 @@
                             }
 
                             function prevStep(step) {
+                                if(step === 3) {
+                                    var listaAtividadesDiv = document.getElementById('listaAtividades');
+                                    listaAtividadesDiv.innerHTML = '';
+
+                                    document.getElementById("formStep3").hidden = false;
+                                    document.getElementById("addActivity").hidden = false;
+                                    document.getElementById("addImport").hidden = false;
+
+                                    formData.template = null
+                                }
+                                
                                 $('#step' + step).hide();
                                 $('#step' + (step - 1)).show();
                             }
@@ -169,6 +194,103 @@
                                 });
                             }
 
+                            function closeTemplateSelector() {
+                                var modal = document.getElementById("myModal");
+
+                                var btn = document.getElementById("myBtn");
+
+                                var span = document.getElementsByClassName("custom-close")[0];
+
+                                modal.style.display = "none";
+                            }
+
+                            function getTemplates() {
+                                return new Promise((resolve, reject) => {
+                                    $.get('/api/templates/list', function(data) {
+                                        if (data.success) {
+                                            resolve(data)
+                                        } else {
+                                            alert('Erro ao carregar templates');
+                                            reject();
+                                        }
+                                    }).fail(function() {
+                                        alert('Erro ao carregar templates');
+                                        reject();
+                                    });
+                                })
+                            }
+
+                            function selectTemplate(template_uid, name) {
+                                formData.template = template_uid
+
+                                var listaAtividadesDiv = document.getElementById('listaAtividades');
+                                listaAtividadesDiv.innerHTML = '';
+
+                                document.getElementById("formStep3").hidden = true;
+                                document.getElementById("addActivity").hidden = true;
+                                document.getElementById("addImport").hidden = true;
+
+                                var atividadeDiv = document.createElement('div');
+                                    atividadeDiv.classList.add('atividade', 'border', 'p-4', 'rounded', 'shadow-sm');
+                                    atividadeDiv.innerHTML = `
+                                        <div class="flex justify-between">
+                                            <div>
+                                                <p><strong>Template:</strong> ${name}</p>
+                                            </div>
+                                        </div>
+                                    `;
+
+                                listaAtividadesDiv.appendChild(atividadeDiv);
+
+                                closeTemplateSelector()
+                            }
+                            
+                            async function importTemplate() {
+                                
+                                const { data } = await getTemplates();
+
+                                var templatesModal = document.getElementById("templates");
+                                console.log('data', data)
+
+                                templatesModal.innerHTML ='';
+
+                                data.forEach((template) => {
+                                    var templateDiv = document.createElement('div');
+                                    templateDiv.classList.add('template-item');
+                                    templateDiv.innerHTML = `
+                                        <a onclick="selectTemplate('${template.class_template_uid}', '${template.name}')">
+                                            <img 
+                                                src="{{ asset('storage/assets/images/file-icon.png')  }}"
+                                            >
+                                        </a>
+                                        <div class="desc"">${template.name}</div>
+                                    `;
+                                    templatesModal.appendChild(templateDiv);
+                                });
+
+                                // Get the modal
+                                var modal = document.getElementById("myModal");
+
+                                // Get the button that opens the modal
+                                var btn = document.getElementById("myBtn");
+
+                                // Get the <span> element that closes the modal
+                                var span = document.getElementsByClassName("custom-close")[0];
+
+                                // When the user clicks on the button, open the modal
+                                modal.style.display = "block";
+
+                                // When the user clicks on <span> (x), close the modal
+                                // modal.style.display = "none";
+
+                                // When the user clicks anywhere outside of the modal, close it
+                                // window.onclick = function(event) {
+                                //     if (event.target == modal) {
+                                //         modal.style.display = "none";
+                                //     }
+                                // }
+                            }
+
                             var atividadeCount = 1;
                             var atividades = [];
 
@@ -184,7 +306,7 @@
                                         name: nome,
                                         description: descricao,
                                         due_at: prazo,
-                                        file: arquivo
+                                        files: [arquivo]
                                     };
                                     atividades.push(atividade);
                                     renderListaAtividades();
@@ -223,7 +345,7 @@
                                             <div>
                                                 <p><strong>Nome:</strong> ${atividade.name}</p>
                                                 <p><strong>Prazo:</strong> ${prazoFormatado}</p>
-                                                <p><strong>Arquivo:</strong> ${atividade.file.name}</p>
+                                                <p><strong>Arquivo:</strong> ${atividade.files[0].name}</p>
                                             </div>
                                             <div class="space-x-2">
                                                 <button style="color:orange" type="button" class="text-gray-500 hover:text-gray-900" onclick="editarAtividade(${atividade.id})">
@@ -271,6 +393,9 @@
                                 var formToSubmit = new FormData();
                                 formToSubmit.append('semester', formData.semestre);
                                 formToSubmit.append('year', formData.ano);
+                                if(formData.template) {
+                                    formToSubmit.append('template', formData.template);
+                                }
                                 formData.alunos.forEach(function(aluno, index) {
                                     formToSubmit.append('students[]', aluno);
                                 });
@@ -278,7 +403,9 @@
                                     formToSubmit.append('activities[' + index + '][name]', atividade.name);
                                     formToSubmit.append('activities[' + index + '][description]', atividade.description);
                                     formToSubmit.append('activities[' + index + '][due_at]', atividade.due_at);
-                                    formToSubmit.append('activities[' + index + '][file]', atividade.file);
+                                    atividade.files.forEach((file, fileIndex) => {
+                                        formToSubmit.append('activities[' + index + '][files]['+ fileIndex +']', file);                                        
+                                    });
                                 });
 
                                 $.ajax({
@@ -301,6 +428,78 @@
                                 });
                             }
                         </script>
+                        <style>
+                            .custom-modal {
+                                display: none; /* Hidden by default */
+                                position: fixed; /* Stay in place */
+                                z-index: 9999; /* Sit on top */
+                                left: 0;
+                                top: 0;
+                                width: 100%; /* Full width */
+                                height: 100%; /* Full height */
+                                overflow: auto; /* Enable scroll if needed */
+                                background-color: rgb(0,0,0); /* Fallback color */
+                                background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+                            }
+
+                            /* Modal Content/Box */
+                            .custom-modal-content {
+                                background-color: #fefefe;
+                                margin: 15% auto; /* 15% from the top and centered */
+                                padding: 20px;
+                                border: 1px solid #888;
+                                width: 80%; /* Could be more or less, depending on screen size */
+                            }
+
+                            /* The Close Button */
+                            .custom-close {
+                                color: #aaa;
+                                float: right;
+                                font-size: 28px;
+                                font-weight: bold;
+                            }
+
+                            .custom-close:hover,
+                            .custom-close:focus {
+                                color: black;
+                                text-decoration: none;
+                                cursor: pointer;
+                            }
+
+                            div.gallery {
+                                margin: 5px;
+                                border: 1px solid #ccc;
+                                float: left;
+                                width: 180px;
+                            }
+
+                            div.gallery:hover {
+                                border: 1px solid #777;
+                            }
+
+                            div.gallery img {
+                                width: 100%;
+                                height: auto;
+                            }
+
+                            div.desc {
+                                padding: 15px;
+                                text-align: center;
+                            }
+
+                            .template-box {
+                                display: flex;
+
+                            }
+
+                            .template-item {
+                                display: flex;
+                                flex-direction: column;
+                                justify-content: center !important;
+                                align-items: center !important;
+                                cursor: pointer;
+                            }
+                        </style>
                     </div>
                 </div>
             </div>
