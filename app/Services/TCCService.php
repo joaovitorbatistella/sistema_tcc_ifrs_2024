@@ -6,6 +6,7 @@ use App\Models\TccClass;
 use App\Models\User;
 use App\Models\UserClass;
 use App\Models\UserClassActivity;
+use App\Models\UserClassActivityStep;
 use App\Models\UserClassActivityAppend;
 use App\Helpers\FileHelper;
 use App\Services\Contracts\ITCCService;
@@ -144,6 +145,20 @@ class TCCService implements ITCCService
                                 ]);      
                                 
                         if(!isset($user_class_activity_append)) throw new \Exception("Error user_class_activity_append");
+                    }
+                }
+
+                if(isset($activity->steps)) {
+
+                    foreach ($activity->steps as $key => $step) {
+                        $user_class_activity_step = 
+                                UserClassActivityStep::create([
+                                    'user_class_activity_id'    =>  $user_class_activity->user_class_activity_id,
+                                    'name'                      =>  $step['name'] ?? "Passo $key",
+                                    'completed'                 =>  0
+                                ]);      
+                                
+                        if(!isset($user_class_activity_step)) throw new \Exception("Error user_class_activity_step");
                     }
                 }
 

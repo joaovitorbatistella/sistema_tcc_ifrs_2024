@@ -200,46 +200,48 @@ class ClassController extends Controller
                                                     $user_id
                                                 );
 
-            // Job Batch for students
-            $queue_process = QueueProcess::create([
-                'queue_uid' => uniqid(),
-                'ip'        => $request->ip(),
-                'user_id'   => $user_id,
-                'class_id'  => $class->tcc_class_id,
-                'queue'     => 'default',
-                'data'      => json_encode($data),
-                'status'    => QueueProcess::STATUS_ON_QUEUE
-            ]);
+            if(isset($data['students'])) {
+                // Job Batch for students
+                $queue_process = QueueProcess::create([
+                    'queue_uid' => uniqid(),
+                    'ip'        => $request->ip(),
+                    'user_id'   => $user_id,
+                    'class_id'  => $class->tcc_class_id,
+                    'queue'     => 'default',
+                    'data'      => json_encode($data),
+                    'status'    => QueueProcess::STATUS_ON_QUEUE
+                ]);
+                
+                foreach ($data['students'] as $key => $student) {
+                    $jobs[] =   new ProcessingTccStudent(
+                                        $queue_process->queue_id,
+                                        $student
+                                    );
+                }
 
-            foreach ($data['students'] as $key => $student) {
-                $jobs[] =   new ProcessingTccStudent(
-                                    $queue_process->queue_id,
-                                    $student
-                                );
-            }
+                $batch = Bus::batch($jobs)
+                    ->finally(function (Batch $batch) use($queue_process) {
+                        $jb = $queue_process->batchValues($batch);
 
-            $batch = Bus::batch($jobs)
-                ->finally(function (Batch $batch) use($queue_process) {
-                    $jb = $queue_process->batchValues($batch);
+                        if ($jb['progress'] === 100) {
 
-                    if ($jb['progress'] === 100) {
+                            $queue_process->clearTempFolder();
+                            $queue_process->finishJobBatch($batch);
 
-                        $queue_process->clearTempFolder();
-                        $queue_process->finishJobBatch($batch);
+                        }
+                    })
+                    ->allowFailures()
+                    ->name('queue-process')
+                    ->onConnection('redis')
+                    ->onQueue('default')
+                    ->dispatch();
 
-                    }
-                })
-                ->allowFailures()
-                ->name('queue-process')
-                ->onConnection('redis')
-                ->onQueue('default')
-                ->dispatch();
-
-            if (filled($batch)) {
-                $queue_process->batch_id    = $batch->id;
-                $queue_process->status = QueueProcess::STATUS_APPROVED;
-                $queue_process->approved_at = now();
-                $queue_process->saveQuietly();
+                if (filled($batch)) {
+                    $queue_process->batch_id    = $batch->id;
+                    $queue_process->status = QueueProcess::STATUS_APPROVED;
+                    $queue_process->approved_at = now();
+                    $queue_process->saveQuietly();
+                }   
             }
 
             return response()->json([
