@@ -7,15 +7,17 @@
                 </h2>
             </div>
             <div class="flex items-center space-x-4">
-                <div>
-                    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-                    <div class="relative">
-                        <input type="text" name="search" size="20" class="peer w-full text-gray-600 bg-gray-300 p-2 pl-10 pr-10 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white mt-2 mb-2" placeholder="Buscar">
-                        <i class="material-icons absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400" style="top: 20px; right: 5px;">
-                            search
-                        </i>
+                <form action="{{ route('files.search') }}" method="GET">
+                    <div>
+                        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+                        <div class="relative">
+                            <input type="text" name="search" size="20" class="peer w-full text-gray-600 bg-gray-300 p-2 pl-10 pr-10 rounded shadow-sm border border-gray-300 focus:outline-none focus:bg-white mt-2 mb-2" placeholder="Buscar">
+                            <i class="material-icons absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400" style="top: 20px; right: 5px;">
+                                search
+                            </i>
+                        </div>
                     </div>
-                </div>
+                </form>
                 <div style="margin-left: 10px; margin-top:10px">
                     <label>Filtrar por:</label>
                 </div>
@@ -177,6 +179,8 @@
                 const fileDocInput = document.getElementById('fileDocInput');
                 const fileTCCInput = document.getElementById('fileTCCInput');
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                const searchInput = document.querySelector('input[name="search"]');
+                const orderBySelect = document.getElementById('order_by');
 
                 const openModal = (modal) => {
                     modal.classList.remove('hidden');
@@ -186,41 +190,36 @@
                     modal.classList.add('hidden');
                 };
 
-                const updateTable = (tableId) => {
-                    fetch('{{ route("files.list") }}')
+                const updateTable = (tableId, searchQuery = '', typeId = null, orderBy = 'name') => {
+                    fetch(`{{ route('files.search') }}?search=${encodeURIComponent(searchQuery)}${typeId ? `&type_id=${typeId}` : ''}&order_by=${orderBy}`)
                         .then(response => response.json())
                         .then(data => {
                             const tableBody = document.getElementById(tableId);
                             tableBody.innerHTML = '';
 
-                            // Filtrar os arquivos de acordo com a tabela
-                            const filteredData = data.filter(file => {
-                                if (tableId === 'filesTableBody') {
-                                    return file.type_id === 1; // Filtrar por type_id 1 para Documentos
-                                } else if (tableId === 'tccsTableBody') {
-                                    return file.type_id === 3; // Filtrar por type_id 3 para TCCs
-                                }
-                            });
-
-                            filteredData.forEach(append => {
+                            // Atualize a tabela com os dados recebidos
+                            data.forEach(file => {
                                 const row = document.createElement('tr');
                                 row.classList.add('table-row', 'table-row-hover');
                                 row.innerHTML = `
-                                <td class="table-cell">${append.name}</td>
-                                <td class="table-cell">${new Date(append.updated_at).toLocaleString()}</td>
+                                <td class="table-cell">${file.name}</td>
+                                <td class="table-cell">${new Date(file.updated_at).toLocaleString()}</td>
                                 <td class="table-cell">
-                                    <button class="download-button" data-id="${append.append_id}">
+                                    <button class="download-button" data-id="${file.append_id}">
                                         <span class="material-icons-outlined download-icon">file_download</span>
                                     </button>
-                                    <button class="delete-button" data-id="${append.append_id}">
+                                    <button class="delete-button" data-id="${file.append_id}">
                                         <span class="material-icons-outlined delete-icon">delete</span>
                                     </button>
-                                </td>                 `;
+                                </td>                 
+                            `;
                                 tableBody.appendChild(row);
                             });
+                        })
+                        .catch(error => {
+                            console.error('Erro ao buscar arquivos:', error);
                         });
                 };
-
 
                 openModalDocButton.addEventListener('click', () => openModal(fileDocModal));
                 openModalTCCButton.addEventListener('click', () => openModal(fileTCCModal));
@@ -245,7 +244,7 @@
                         .then(data => {
                             if (data.success) {
                                 closeModal(fileDocModal);
-                                updateTable('filesTableBody', 1);
+                                updateTable('filesTableBody', '', 1, 'name');
                             } else {
                                 alert('Erro ao fazer upload do arquivo.');
                             }
@@ -269,11 +268,26 @@
                         .then(data => {
                             if (data.success) {
                                 closeModal(fileTCCModal);
-                                updateTable('tccsTableBody', 3);
+                                updateTable('filesTableBody', '', 3, 'name');
                             } else {
                                 alert('Erro ao fazer upload do arquivo.');
                             }
                         });
+                });
+
+                //Função para a pesquisa de arquivo
+                searchInput.addEventListener('input', () => {
+                    const searchQuery = searchInput.value;
+                    const orderBy = orderBySelect.value;
+                    updateTable('filesTableBody', searchQuery, 1, orderBy); // Atualize a tabela de Documentos
+                    updateTable('tccsTableBody', searchQuery, 3, orderBy); // Atualize a tabela de TCCs
+                });
+
+                orderBySelect.addEventListener('change', () => {
+                    const searchQuery = searchInput.value;
+                    const orderBy = orderBySelect.value;
+                    updateTable('filesTableBody', searchQuery, 1, orderBy); // Atualize a tabela de Documentos
+                    updateTable('tccsTableBody', searchQuery, 3, orderBy); // Atualize a tabela de TCCs
                 });
 
                 // Função para excluir um arquivo
@@ -327,8 +341,8 @@
                 });
 
                 // Inicializa as tabelas na carga da página
-                updateTable('filesTableBody', 1); // 1 para Documentos
-                updateTable('tccsTableBody', 3); // 3 para TCCs
+                updateTable('filesTableBody', '', 1, 'name');
+                updateTable('tccsTableBody', '', 3, 'name');
             });
         </script>
 

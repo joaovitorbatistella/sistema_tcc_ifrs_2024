@@ -82,6 +82,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/upload/file', [FileController::class, 'uploadFile'])->name('upload.file');
     Route::delete('/files/delete/{id}', [FileController::class, 'deleteFile'])->name('files.delete');
     Route::get('/download/{fileId}', [FileController::class, 'download']);
+    Route::get('/search', [FileController::class, 'search'])->name('files.search');
+
 
 });
 

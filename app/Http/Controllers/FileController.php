@@ -47,12 +47,41 @@ class FileController extends Controller
     public function download($fileId)
     {
         $file = Append::findOrFail($fileId);
-        $filePath = storage_path('app/public/' . $file->path);
+        $filePath = storage_path('storage/app/public/' . $file->path);
+
+        // dd($filePath);
 
         if (!file_exists($filePath)) {
-            abort(404);
+            abort(404, 'Arquivo não encontrado.');
         }
 
         return response()->download($filePath);
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->input('search', '');
+        $typeId = $request->input('type_id');
+        $orderBy = $request->input('order_by', 'name'); // Default to 'name'
+
+        $query = Append::query();
+
+        if ($search) {
+            $query->where('name', 'like', "%$search%");
+        }
+
+        if ($typeId) {
+            $query->where('type_id', $typeId);
+        }
+
+        if ($orderBy === 'date') {
+            $query->orderBy('updated_at', 'desc');
+        } else {
+            $query->orderBy('name', 'asc');
+        }
+
+        $files = $query->get();
+
+        return response()->json($files);
     }
 }
