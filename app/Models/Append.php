@@ -27,7 +27,7 @@ class Append extends Model
         'updated_at',
     ];
 
-    public static function generateUid() : string
+    public static function generateUid(): string
     {
         return uniqid("");
     }

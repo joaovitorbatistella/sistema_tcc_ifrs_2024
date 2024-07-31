@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfessoresController;
 use App\Http\Controllers\TurmasController;
 use App\Http\Controllers\ClassController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\TemplateController;
 use Illuminate\Support\Facades\Route;
 
@@ -44,7 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/alunos/{aluno}', [AlunosController::class, 'update'])->name('alunos-controller.update');
     Route::delete('/alunos/{aluno}', [AlunosController::class, 'destroy'])->name('alunos-controller.destroy');
 
-    Route::group(['prefix' => 'api'], function() {
+    Route::group(['prefix' => 'api'], function () {
         Route::get('/alunos/list', [AlunosController::class, 'list'])->name('alunos-controller-list');
         Route::get('/templates/list', [TemplateController::class, 'list'])->name('template-controller-list');
     });
@@ -63,11 +64,27 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/turmas', [TurmasController::class, 'index'])->name('turmas-controller.index');
     Route::post('/turmas/cadastro/step1', [TurmasController::class, 'step1']);
-    Route::post('/turmas/cadastro/step2', [TurmasController::class, 'step2']);   
+    Route::post('/turmas/cadastro/step2', [TurmasController::class, 'step2']);
     Route::post('/turmas/cadastro/step3', [TurmasController::class, 'step3']);
-    
+
     Route::get('/classes', [ClassController::class, 'index'])->name('class-controller.index');
     Route::post('/classes/create', [ClassController::class, 'store'])->name('class-controller.store');
+
+    Route::get('/biblioteca', function () {
+        return view('biblioteca');
+    })->middleware(['auth', 'verified'])->name('biblioteca');
+
+    Route::get('/arquivos', function () {
+        return view('arquivos');
+    })->middleware(['auth', 'verified'])->name('arquivos');
+
+    Route::get('/files/list', [FileController::class, 'listFiles'])->name('files.list');
+    Route::post('/upload/file', [FileController::class, 'uploadFile'])->name('upload.file');
+    Route::delete('/files/delete/{id}', [FileController::class, 'deleteFile'])->name('files.delete');
+    Route::get('/download/{fileId}', [FileController::class, 'download']);
+    Route::get('/search', [FileController::class, 'search'])->name('files.search');
+
+
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
