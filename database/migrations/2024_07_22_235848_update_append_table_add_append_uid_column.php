@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -12,12 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("ALTER TABLE tcc_ifrs.tcc MODIFY COLUMN tcc_id bigint(20) unsigned auto_increment NOT NULL;");  
+        Schema::table('append', function (Blueprint $table) {
+            $table->string('append_uid', 13)->after('append_id');
+        });
     }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
-    {}
+    {
+        Schema::table('append', function (Blueprint $table) {
+            $table->dropColumn('append_uid');
+        });
+    }
 };

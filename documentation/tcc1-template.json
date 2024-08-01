@@ -1,0 +1,98 @@
+{
+    "name": "TCC 1",
+    "start_date": "2024-07-25T00:00",
+    "activities": [
+      {
+        "name": "Termo de Aceite do Orientador",
+        "description": "Anexar termo de aceite assinado.",
+        "due_at": null,
+        "humanized_time": "2-week",
+        "files": [
+          {
+            "append": 1
+          }
+        ],
+        "steps": [
+          {
+            "name": "Ler termo",
+            "notes": "Ler termo"
+          },
+          {
+            "name": "Enviar Termo de aceite",
+            "notes": "Enviar Termo de aceite"
+          }
+        ]
+      },
+      {
+        "name": "Proposta de Trabalho de Conclusão de Curso",
+        "description": "Anexar proposta de Trabalho de Conclusão de Curso.",
+        "due_at": null,
+        "humanized_time": "8-week",
+        "files": [
+          {
+            "append": 2
+          }
+        ],
+        "steps": [
+          {
+            "name": "Ler anexo de exemplo",
+            "notes": "Ler anexo de exemplo"
+          },
+          {
+            "name": "Enviar proposta de Trabalho de Conclusão de Curso",
+            "notes": "Enviar proposta de Trabalho de Conclusão de Curso"
+          }
+        ]
+      },
+      {
+        "name": "Projeto de Trabalho de Conslusão de Curso",
+        "description": "Anexar Projeto de Trabalho de Conslusão de Curso.",
+        "due_at": null,
+        "humanized_time": "16-week",
+        "files": [
+          {
+            "append": 3
+          }
+        ],
+        "steps": [
+          {
+            "name": "Ler anexo de exemplo",
+            "notes": "Ler anexo de exemplo"
+          },
+          {
+            "name": "Projeto de Trabalho de Conslusão de Curso",
+            "notes": "Projeto de Trabalho de Conslusão de Curso"
+          }
+        ]
+      },
+      {
+        "name": "Solicitação de Agendamento de Banca",
+        "description": "Anexar Solicitação de Agendamento de Banca.",
+        "due_at": null,
+        "humanized_time": "18-week",
+        "files": [
+          {
+            "append": 4
+          }
+        ],
+        "steps": [
+           {
+            "name": "Ler anexo de exemplo",
+            "notes": "Ler anexo de exemplo"
+          },
+          {
+            "name": "Anexar Solicitação de Agendamento de Banca",
+            "notes": "Anexar Solicitação de Agendamento de Banca"
+          }
+        ]
+      },
+      {
+        "name": "Defesa",
+        "description": "Defesa TCC1.",
+        "due_at": null,
+        "humanized_time": "19-week",
+        "files": [],
+        "steps": []
+      }
+    ]
+  }
