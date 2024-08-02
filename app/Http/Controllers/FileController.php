@@ -14,12 +14,13 @@ class FileController extends Controller
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $path = $file->store('public/uploads');
+            $relativePath = str_replace('public/', '', $path);
             $fileModel = new Append();
             $fileModel->name = $file->getClientOriginalName();
             $fileModel->user_id = auth()->user()->id;
             $fileModel->type_id = $request->input('type_id');
             $fileModel->public = 1;
-            $fileModel->path = Storage::url($path);
+            $fileModel->path = $relativePath;
             $fileModel->created_at = now();
             $fileModel->updated_at = now();
             $fileModel->save();
@@ -47,7 +48,7 @@ class FileController extends Controller
     public function download($fileId)
     {
         $file = Append::findOrFail($fileId);
-        $filePath = storage_path('storage/app/public/' . $file->path);
+        $filePath = storage_path('app/public/uploads/' . $file->path);
 
         // dd($filePath);
 
@@ -62,26 +63,30 @@ class FileController extends Controller
     {
         $search = $request->input('search', '');
         $typeId = $request->input('type_id');
-        $orderBy = $request->input('order_by', 'name'); // Default to 'name'
+        $orderBy = $request->input('order_by', 'name');
 
-        $query = Append::query();
+        try {
+            $query = Append::query();
 
-        if ($search) {
-            $query->where('name', 'like', "%$search%");
+            if (!empty($search)) {
+                $query->where('name', 'like', "%$search%");
+            }
+
+            if (!empty($typeId)) {
+                $query->where('type_id', $typeId);
+            }
+
+            if ($orderBy === 'date') {
+                $query->orderBy('updated_at', 'desc');
+            } else {
+                $query->orderBy('name', 'asc');
+            }
+
+            $files = $query->get();
+
+            return response()->json($files);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro'], 500);
         }
-
-        if ($typeId) {
-            $query->where('type_id', $typeId);
-        }
-
-        if ($orderBy === 'date') {
-            $query->orderBy('updated_at', 'desc');
-        } else {
-            $query->orderBy('name', 'asc');
-        }
-
-        $files = $query->get();
-
-        return response()->json($files);
     }
 }

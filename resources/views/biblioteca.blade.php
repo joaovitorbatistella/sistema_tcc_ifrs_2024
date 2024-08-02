@@ -197,22 +197,21 @@
                             const tableBody = document.getElementById(tableId);
                             tableBody.innerHTML = '';
 
-                            // Atualize a tabela com os dados recebidos
                             data.forEach(file => {
                                 const row = document.createElement('tr');
-                                row.classList.add('table-row', 'table-row-hover');
+                                row.classList.add('table-row');
                                 row.innerHTML = `
-                                <td class="table-cell">${file.name}</td>
-                                <td class="table-cell">${new Date(file.updated_at).toLocaleString()}</td>
-                                <td class="table-cell">
-                                    <button class="download-button" data-id="${file.append_id}">
-                                        <span class="material-icons-outlined download-icon">file_download</span>
-                                    </button>
-                                    <button class="delete-button" data-id="${file.append_id}">
-                                        <span class="material-icons-outlined delete-icon">delete</span>
-                                    </button>
-                                </td>                 
-                            `;
+                            <td class="table-cell">${file.name}</td>
+                            <td class="table-cell">${new Date(file.updated_at).toLocaleString()}</td>
+                            <td class="table-cell">
+                                <button class="download-button" data-id="${file.append_id}">
+                                    <span class="material-icons-outlined download-icon">file_download</span>
+                                </button>
+                                <button class="delete-button" data-id="${file.append_id}">
+                                    <span class="material-icons-outlined delete-icon">delete</span>
+                                </button>
+                            </td>                 
+                        `;
                                 tableBody.appendChild(row);
                             });
                         })
@@ -268,26 +267,26 @@
                         .then(data => {
                             if (data.success) {
                                 closeModal(fileTCCModal);
-                                updateTable('filesTableBody', '', 3, 'name');
+                                updateTable('tccsTableBody', '', 3, 'name'); // Atualiza a tabela de TCCs
                             } else {
                                 alert('Erro ao fazer upload do arquivo.');
                             }
                         });
                 });
 
-                //Função para a pesquisa de arquivo
+                // Função para a pesquisa de arquivo
                 searchInput.addEventListener('input', () => {
                     const searchQuery = searchInput.value;
                     const orderBy = orderBySelect.value;
-                    updateTable('filesTableBody', searchQuery, 1, orderBy); // Atualize a tabela de Documentos
-                    updateTable('tccsTableBody', searchQuery, 3, orderBy); // Atualize a tabela de TCCs
+                    updateTable('filesTableBody', searchQuery, 1, orderBy);
+                    updateTable('tccsTableBody', searchQuery, 3, orderBy);
                 });
 
                 orderBySelect.addEventListener('change', () => {
                     const searchQuery = searchInput.value;
                     const orderBy = orderBySelect.value;
-                    updateTable('filesTableBody', searchQuery, 1, orderBy); // Atualize a tabela de Documentos
-                    updateTable('tccsTableBody', searchQuery, 3, orderBy); // Atualize a tabela de TCCs
+                    updateTable('filesTableBody', searchQuery, 1, orderBy);
+                    updateTable('tccsTableBody', searchQuery, 3, orderBy);
                 });
 
                 // Função para excluir um arquivo
@@ -303,7 +302,8 @@
                         .then(data => {
                             if (data.success) {
                                 alert(data.message);
-                                updateTable(tableId);
+                                updateTable('filesTableBody', '', 1, 'name');
+                                updateTable('tccsTableBody', '', 3, 'name');
                             } else {
                                 alert('Erro ao excluir o arquivo.');
                             }
@@ -340,11 +340,12 @@
                     }
                 });
 
-                // Inicializa as tabelas na carga da página
+                // Inicializa as tabelas na página
                 updateTable('filesTableBody', '', 1, 'name');
                 updateTable('tccsTableBody', '', 3, 'name');
             });
         </script>
+
 
 
 </x-app-layout>
