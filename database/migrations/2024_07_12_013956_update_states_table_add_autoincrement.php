@@ -12,7 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        DB::statement("SET FOREIGN_KEY_CHECKS=0");
         DB::statement("ALTER TABLE states MODIFY COLUMN id int(10) unsigned auto_increment NOT NULL");
+        DB::statement("SET FOREIGN_KEY_CHECKS=1;");
     }
 
     /**
