@@ -83,7 +83,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/files/delete/{id}', [FileController::class, 'deleteFile'])->name('files.delete');
     Route::get('/download/{fileId}', [FileController::class, 'download']);
     Route::get('/search', [FileController::class, 'search'])->name('files.search');
-
+    Route::get('/recent-files', [FileController::class, 'recentFiles'])->name('recent.files');
 
 });
 

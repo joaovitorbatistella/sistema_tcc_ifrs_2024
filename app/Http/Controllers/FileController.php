@@ -45,18 +45,18 @@ class FileController extends Controller
         return response()->json(['success' => true, 'message' => 'Arquivo deletado com sucesso!']);
     }
 
-    public function download($fileId)
+    public function downloadFile($id)
     {
-        $file = Append::findOrFail($fileId);
-        $filePath = storage_path('app/public/uploads/' . $file->path);
+        $file = Append::find($id);
 
-        // dd($filePath);
-
-        if (!file_exists($filePath)) {
-            abort(404, 'Arquivo não encontrado.');
+        if ($file) {
+            $path = storage_path("app/{$file->path}");
+            if (file_exists($path)) {
+                return response()->download($path);
+            }
         }
 
-        return response()->download($filePath);
+        return response()->json(['success' => false, 'message' => 'Arquivo não encontrado.']);
     }
 
     public function search(Request $request)
@@ -88,5 +88,11 @@ class FileController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 'Erro'], 500);
         }
+    }
+
+    public function recentFiles()
+    {
+        $files = Append::orderBy('created_at', 'desc')->limit(5)->get();
+        return response()->json($files);
     }
 }
