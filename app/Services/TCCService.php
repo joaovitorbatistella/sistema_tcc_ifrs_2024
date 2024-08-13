@@ -56,6 +56,7 @@ class TCCService implements ITCCService
             ];
 
         } catch (\Exception $e) {
+            throw $e;
             return [
                 "error" => $e->getMessage()
             ];
