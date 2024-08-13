@@ -26,4 +26,22 @@ class UserClassActivity extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function steps(){
+        return $this->hasMany(UserClassActivityStep::class, 'user_class_activity_id', 'user_class_activity_id');
+      } 
+
+    public function attachments(){
+        return $this->hasMany(UserClassActivityAppend::class, 'user_class_activity_id', 'user_class_activity_id');
+    } 
+
+
+    public static function userActivity($user_id, $class_id)
+    {
+        return UserClassActivity::select('user_class_activity.*')
+                   ->join('user_class', 'user_class_activity.user_class_id', '=', 'user_class.user_class_id')
+                   ->where('user_class.user_id', $user_id)
+                   ->where('user_class.tcc_class_id', $class_id);
+    }
+    
 }

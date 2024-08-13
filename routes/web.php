@@ -6,8 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProfessoresController;
 use App\Http\Controllers\TurmasController;
 use App\Http\Controllers\ClassController;
-use App\Http\Controllers\TemplateController;
+use App\Http\Controllers\ActivityController;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -68,6 +69,11 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/classes', [ClassController::class, 'index'])->name('class-controller.index');
     Route::post('/classes/create', [ClassController::class, 'store'])->name('class-controller.store');
+
+    Route::get('/classes/{class_id}/activities', [ActivityController::class, 'index'])->name('activity-controller.index');
+    Route::get('/atividades/{id}', [ActivityController::class, 'show'])->name('activity-controller.show');
+    Route::post('/atividades/{id}/advance', [ActivityController::class, 'advance'])->name('activities.advance');
+    Route::post('/atividades/{id}/return', [ActivityController::class, 'return'])->name('activities.return');
 });
 
 require __DIR__.'/auth.php';
