@@ -45,18 +45,15 @@ class FileController extends Controller
         return response()->json(['success' => true, 'message' => 'Arquivo deletado com sucesso!']);
     }
 
-    public function downloadFile($id)
+    public function download($fileId)
     {
-        $file = Append::find($id);
+        $file = Append::findOrFail($fileId);
+        $filePath = storage_path('app/public/' . $file->path);
 
-        if ($file) {
-            $path = storage_path("app/{$file->path}");
-            if (file_exists($path)) {
-                return response()->download($path);
-            }
+        if (!file_exists($filePath)) {
+            abort(404, 'Arquivo não encontrado.');
         }
-
-        return response()->json(['success' => false, 'message' => 'Arquivo não encontrado.']);
+        return response()->download($filePath, $file->name);
     }
 
     public function search(Request $request)

@@ -36,7 +36,7 @@
                 <h2 class="titulo">
                     Recentes
                 </h2>
-                <button id="openModalButton" type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 border border-red-600 rounded">
+                <button id="openModalButton" type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 rounded">
                     Adicionar Documento
                 </button>
             </div>
@@ -212,6 +212,20 @@
                 .options.hidden {
                     display: none;
                 }
+
+                .fileInput::file-selector-button {
+                    background-color: #38a169;
+                    color: white;
+                    padding: 0.5rem 1rem;
+                    border-radius: 0.25rem;
+                    font-weight: 600;
+                    border: none;
+                    cursor: pointer;
+                }
+
+                .fileInput::file-selector-button:hover {
+                    background-color: #2f855a;
+                }
             </style>
 
             <div class="container">
@@ -250,7 +264,7 @@
                 <div id="fileModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center hidden">
                     <div class="bg-white p-4 rounded shadow-lg">
                         <h3 class="text-lg font-bold mb-4">Adicionar Arquivo</h3>
-                        <input type="file" id="fileInput" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-c-green file:text-white hover:file:bg-green-600">
+                        <input type="file" id="fileInput" class="fileInput">
                         <div class="flex justify-end mt-4 space-x-2">
                             <button id="closeModalButton" type="button" class="bg-red-600 text-white text-lg font-bold py-1 px-2 rounded" style="margin-right: 10px;">Fechar</button>
                             <button id="confirmButton" type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 rounded" style="margin-right: 10px;">Confirmar</button>
@@ -356,6 +370,7 @@
                                                         ${icon}
                                                     </i>
                                                     <p>${file.name}</p>
+                                                    <p>${new Date(file.updated_at).toLocaleString()}</p>
                                                     <div class="options-menu">
                                                         <button class="options-button">
                                                             <span class="material-icons">more_vert</span>

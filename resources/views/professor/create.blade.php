@@ -24,7 +24,7 @@
         <div>
             <div class="overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">
                 <div>
-                    <form class="max-w-md mx-auto" action="{{ route('professores-controller.store') }}" method="POST">
+                    <form action="{{ route('professores-controller.store') }}" method="POST">
                         @csrf
                         <div style="margin-top: 15px;">
                             <div style="margin-left: 20px; margin-right: 20px;" class="grid md:grid-cols-2 md:gap-6">

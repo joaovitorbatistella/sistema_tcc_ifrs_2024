@@ -7,7 +7,7 @@
                     </h2>
                 </div>
                 <div>
-                    <button type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 border border-red-600 rounded">
+                    <button type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 rounded">
                         <a href="{{route('professores-controller.create')}}">Adicionar Professor</a>
                     </button>
                 </div>
