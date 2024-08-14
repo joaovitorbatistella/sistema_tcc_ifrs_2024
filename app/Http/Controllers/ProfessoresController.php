@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\UserGroup;
+use Illuminate\Support\Facades\Hash;
 
 use function Laravel\Prompts\alert;
 
@@ -47,7 +48,7 @@ class ProfessoresController extends Controller
             'martial_status' => $request->input('martial_status'),
             'family_income' => $request->input('family_income'),
             'family_number' => $request->input('family_number'),
-            'password' => $request->input('password'),
+            'password' => Hash::make(str_replace("-", "", $request->input('birthday')))
         ]);
 
         if($created){
