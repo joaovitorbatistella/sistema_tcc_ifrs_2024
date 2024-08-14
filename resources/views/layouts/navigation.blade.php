@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        <img src="{{ asset('images/logobranca.png') }}" alt="Logo" class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
 
@@ -51,8 +51,7 @@
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
+                            <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Sair') }}
                             </x-dropdown-link>
@@ -97,8 +96,7 @@
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
 
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
+                    <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Sair') }}
                     </x-responsive-nav-link>
@@ -109,7 +107,7 @@
 </nav>
 
 <style>
-.bg-c-green {
-    background: #41A24D
-}
+    .bg-c-green {
+        background: #41A24D
+    }
 </style>
