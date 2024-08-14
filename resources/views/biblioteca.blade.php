@@ -330,7 +330,7 @@
 
                 // Função para baixar um arquivo
                 const downloadFile = (fileId) => {
-                    window.location.href = `/files/download/${fileId}`;
+                    window.location.href = `/download/${fileId}`;
                 };
 
                 // Adicionar um listener para os botões de exclusão e download
