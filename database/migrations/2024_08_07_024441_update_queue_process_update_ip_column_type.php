@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -12,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("SET FOREIGN_KEY_CHECKS=0");
-        DB::statement("ALTER TABLE states MODIFY COLUMN id int(10) unsigned auto_increment NOT NULL");
-        DB::statement("SET FOREIGN_KEY_CHECKS=1;");
+        Schema::table('queue_process', function (Blueprint $table) {
+            $table->char('ip', 15)->nullable()->change();
+        });
     }
 
     /**
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::table('queue_process', function (Blueprint $table) {
+            $table->char('ip', 12)->nullable()->change();
+        });
     }
 };
