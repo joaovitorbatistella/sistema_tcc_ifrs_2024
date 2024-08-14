@@ -7,7 +7,7 @@
                 </h2>
             </div>
             <div class="flex items-center space-x-4">
-                <form action="{{ route('files.search') }}" method="GET">
+                <form action="{{ route('files.search-public') }}" method="GET">
                     <div>
                         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
                         <div class="relative">
@@ -205,7 +205,7 @@
                 };
 
                 const updateTable = (tableId, searchQuery = '', typeId = null, orderBy = 'name') => {
-                    fetch(`{{ route('files.search') }}?search=${encodeURIComponent(searchQuery)}${typeId ? `&type_id=${typeId}` : ''}&order_by=${orderBy}`)
+                    fetch(`{{ route('files.search-public') }}?search=${encodeURIComponent(searchQuery)}${typeId ? `&type_id=${typeId}` : ''}&order_by=${orderBy}`)
                         .then(response => response.json())
                         .then(data => {
                             const tableBody = document.getElementById(tableId);

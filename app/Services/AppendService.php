@@ -41,6 +41,13 @@ class AppendService implements IAppendService
             }
             $now = ( new Carbon())->toIso8601ZuluString();
             $path = $path."/$now"."$name";
+            if(!str_contains($temp_path, storage_path()."/app/")) {
+                $temp_path = storage_path()."/app/".$temp_path;
+            }
+
+            if(!str_contains($path, storage_path()."/app/")) {
+                $path = storage_path()."/app/".$path;
+            }
 
             $moved = copy($temp_path, $path);
 
@@ -53,7 +60,7 @@ class AppendService implements IAppendService
                             'user_id'   => $user_id,
                             'type_id'   => $type_id,
                             'public'    => $is_public,
-                            'path'      => $path,
+                            'path'      => str_replace(storage_path()."/app/", "", $path),
                         ]);
 
             if(!isset($append)) throw new ObjectNotFound("Append not found.");

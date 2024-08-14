@@ -13,8 +13,8 @@ class FileController extends Controller
     {
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $path = $file->store('public/uploads');
-            $relativePath = str_replace('public/', '', $path);
+            $path = $file->store('uploads');
+            $relativePath = $path; //str_replace('public/', '', $path);
             $fileModel = new Append();
             $fileModel->name = $file->getClientOriginalName();
             $fileModel->user_id = auth()->user()->id;
@@ -40,7 +40,7 @@ class FileController extends Controller
     public function deleteFile($id)
     {
         $file = Append::findOrFail($id);
-        Storage::delete(str_replace('/storage/', 'public/', $file->path));
+        Storage::delete($file->path);
         $file->delete();
         return response()->json(['success' => true, 'message' => 'Arquivo deletado com sucesso!']);
     }
@@ -48,7 +48,7 @@ class FileController extends Controller
     public function download($fileId)
     {
         $file = Append::findOrFail($fileId);
-        $filePath = storage_path('app/public/' . $file->path);
+        $filePath = storage_path('app/' . $file->path);
 
         if (!file_exists($filePath)) {
             abort(404, 'Arquivo não encontrado.');
@@ -57,6 +57,39 @@ class FileController extends Controller
     }
 
     public function search(Request $request)
+    {
+        $search = $request->input('search', '');
+        $typeId = $request->input('type_id');
+        $orderBy = $request->input('order_by', 'name');
+
+        try {
+            $query = Append::query();
+
+            $query->where('user_id', auth()->user()->id);
+
+            if (!empty($search)) {
+                $query->where('name', 'like', "%$search%");
+            }
+
+            if (!empty($typeId)) {
+                $query->where('type_id', $typeId);
+            }
+
+            if ($orderBy === 'date') {
+                $query->orderBy('updated_at', 'desc');
+            } else {
+                $query->orderBy('name', 'asc');
+            }
+
+            $files = $query->get();
+
+            return response()->json($files);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro'], 500);
+        }
+    }
+
+    public function searchPublic(Request $request)
     {
         $search = $request->input('search', '');
         $typeId = $request->input('type_id');
@@ -91,7 +124,10 @@ class FileController extends Controller
 
     public function recentFiles()
     {
-        $files = Append::orderBy('created_at', 'desc')->limit(5)->get();
+        $files = Append::where('user_id', auth()->user()->id)
+                       ->orderBy('created_at', 'desc')->limit(5)
+                       ->get();
+
         return response()->json($files);
     }
 }
