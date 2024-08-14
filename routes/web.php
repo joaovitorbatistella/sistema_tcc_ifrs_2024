@@ -8,7 +8,9 @@ use App\Http\Controllers\TurmasController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\TemplateController;
+use App\Http\Controllers\ActivityController;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -67,7 +69,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/turmas/cadastro/step2', [TurmasController::class, 'step2']);
     Route::post('/turmas/cadastro/step3', [TurmasController::class, 'step3']);
 
-    Route::get('/classes', [ClassController::class, 'index'])->name('class-controller.index');
+    Route::get('/classes', [ActivityController::class, 'index'])->name('class-controller.index');
+    Route::get('/classes/new', [ClassController::class, 'index'])->name('class-controller-new.index');
     Route::post('/classes/create', [ClassController::class, 'store'])->name('class-controller.store');
 
     Route::get('/biblioteca', function () {
@@ -86,6 +89,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/search-public', [FileController::class, 'searchPublic'])->name('files.search-public');
     Route::get('/recent-files', [FileController::class, 'recentFiles'])->name('recent.files');
 
+    Route::get('/classes/{class_id}/activities', [ActivityController::class, 'index'])->name('activity-controller.index');
+    Route::get('/atividades/{id}', [ActivityController::class, 'show'])->name('activity-controller.show');
+    Route::post('/atividades/{id}/advance', [ActivityController::class, 'advance'])->name('activities.advance');
+    Route::post('/atividades/{id}/return', [ActivityController::class, 'return'])->name('activities.return');
 });
 
 require __DIR__ . '/auth.php';
