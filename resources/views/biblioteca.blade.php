@@ -87,6 +87,20 @@
                     vertical-align: middle;
                     text-align: center;
                 }
+
+                .fileInput::file-selector-button {
+                    background-color: #38a169;
+                    color: white;
+                    padding: 0.5rem 1rem;
+                    border-radius: 0.25rem;
+                    font-weight: 600;
+                    border: none;
+                    cursor: pointer;
+                }
+
+                .fileInput::file-selector-button:hover {
+                    background-color: #2f855a;
+                }
             </style>
 
             <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -95,7 +109,7 @@
                 <h2 class="titulo">
                     Documentos Importantes
                 </h2>
-                <button id="openModalDocButton" type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 border border-red-600 rounded">
+                <button id="openModalDocButton" type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 rounded">
                     Adicionar Documento
                 </button>
             </div>
@@ -104,7 +118,7 @@
             <div id="fileDocModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center hidden">
                 <div class="bg-white p-4 rounded shadow-lg">
                     <h3 class="text-lg font-bold mb-4">Adicionar Documento</h3>
-                    <input type="file" id="fileDocInput" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-c-green file:text-white hover:file:bg-green-600">
+                    <input type="file" id="fileDocInput" class="fileInput">
                     <div class="flex justify-end mt-4 space-x-2">
                         <button id="closeModalDocButton" type="button" class="bg-red-600 text-white text-lg font-bold py-1 px-2 rounded" style="margin-right: 10px;">Fechar</button>
                         <button id="confirmDocButton" type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 rounded" style="margin-right: 10px;">Confirmar</button>
@@ -133,7 +147,7 @@
                 <h2 class="titulo">
                     TCCs Antigos
                 </h2>
-                <button id="openModalTCCButton" type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 border border-red-600 rounded">
+                <button id="openModalTCCButton" type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 rounded">
                     Adicionar TCC
                 </button>
             </div>
@@ -142,7 +156,7 @@
             <div id="fileTCCModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center hidden">
                 <div class="bg-white p-4 rounded shadow-lg">
                     <h3 class="text-lg font-bold mb-4">Adicionar TCC</h3>
-                    <input type="file" id="fileTCCInput" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-c-green file:text-white hover:file:bg-green-600">
+                    <input type="file" id="fileTCCInput" class="fileInput">
                     <div class="flex justify-end mt-4 space-x-2">
                         <button id="closeModalTCCButton" type="button" class="bg-red-600 text-white text-lg font-bold py-1 px-2 rounded" style="margin-right: 10px;">Fechar</button>
                         <button id="confirmTCCButton" type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 rounded" style="margin-right: 10px;">Confirmar</button>
@@ -316,7 +330,7 @@
 
                 // Função para baixar um arquivo
                 const downloadFile = (fileId) => {
-                    window.location.href = `/files/download/${fileId}`;
+                    window.location.href = `/download/${fileId}`;
                 };
 
                 // Adicionar um listener para os botões de exclusão e download
