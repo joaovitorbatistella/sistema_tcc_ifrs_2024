@@ -26,4 +26,11 @@ class UserClassActivityStep extends Model
         'created_at',
         'updated_at',
     ];
+
+    public static function getMinStepId($userClassActivityId)
+    {
+        return self::where('user_class_activity_id', $userClassActivityId)
+            ->where('completed', 0)
+            ->min('user_class_activity_step_id');
+    }
 }
