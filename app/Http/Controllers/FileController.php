@@ -66,6 +66,8 @@ class FileController extends Controller
 
         $query = Append::query();
 
+        $query->where('public', 1);
+
         if ($search) {
             $query->where('name', 'like', "%$search%");
         }
