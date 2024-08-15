@@ -27,7 +27,9 @@
                         @foreach ($todoActivities as $activity)
                             <div class="mb-4">
                                 <span class="text-xs text-gray-400">TCC: {{$activity->tcc()->name}}</span>
-                                <a href="{{ route('activity-controller.show', ['id' => $activity->user_class_activity_id]) }}" class="flex justify-between p-4 mb-4 {{ $activity->due_at < now() ? 'bg-red-100 text-gray-600' : 'bg-gray-100' }} rounded-lg">
+                                <a href="{{ route('activity-controller.show', ['id' => $activity->user_class_activity_id]) }}" 
+                                    class="flex justify-between p-4 mb-4 {{ $activity->due_at < now() ? 'bg-red-100 text-gray-600' : 'bg-gray-100' }} rounded-lg"
+                                >
                                     <span>{{ $activity->name }}</span>
                                     <span>{{ $activity->due_at }}</span>
                                 </a>
@@ -41,8 +43,8 @@
                         <!-- Lista de atividades históricas -->
                         @foreach ($historicalActivities as $activity)
                             <div class="mb-4">
-                                <span class="text-xs text-gray-400">TCC: {{$tcc[0]->name}}</span>
-                                <a href="{{ route('activity-controller.show', ['id' => $activity->user_class_activity_id]) }}" class="flex justify-between p-4 mb-4 bg-gray-100 rounded-lg">
+                                <span class="text-xs text-gray-400">TCC: {{$activity->tcc()->name}}</span>
+                                <a href="{{ route('activity-controller.show', ['id' => $activity->user_class_activity_id]) }}" class="flex justify-between p-4 mb-4 bg-green-100 rounded-lg">
                                     <span>{{ $activity->name }}</span>
                                     <span>{{ $activity->due_at }}</span>
                                 </a>

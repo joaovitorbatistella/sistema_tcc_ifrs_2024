@@ -27,6 +27,10 @@ class UserClassActivityStep extends Model
         'updated_at',
     ];
 
+    public function activity() {
+        return $this->hasOne(UserClassActivity::class, 'user_class_activity_id', 'user_class_activity_id');
+    }
+
     public static function getMinStepId($userClassActivityId)
     {
         return self::where('user_class_activity_id', $userClassActivityId)

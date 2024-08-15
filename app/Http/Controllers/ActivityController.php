@@ -35,14 +35,24 @@ class ActivityController extends Controller
 
     public function advance(Request $request, $id)
     {
+        $data = (object) $request->all();
         // Lógica para avançar a atividade
-        $activity = UserClassActivityStep::findOrFail($id);
+        $step = UserClassActivityStep::findOrFail($id);
 
-        if ($activity) {
-            $activity->completed = 1;
-            $activity->notes = "dsfsdfsdf";
-            $activity->delivered_at = Carbon::now();
-            $activity->save();
+        if ($step) {
+            $step->completed = 1;
+            $step->notes = $data->comment;
+            $step->delivered_at = Carbon::now();
+            $step->save();
+
+            $allCompleted = !UserClassActivityStep::where('user_class_activity_id', $step->user_class_activity_id)
+                                                 ->where('completed', 0)
+                                                 ->exists();
+
+            if($allCompleted && $activity = $step->activity) {
+                $activity->delivered_at = Carbon::now();
+                $activity->save();
+            }
     
             return redirect()->route('class-controller.index')->with('success', 'Atividade avançada com sucesso!');
         } else {

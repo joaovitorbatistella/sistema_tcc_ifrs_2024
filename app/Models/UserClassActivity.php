@@ -33,7 +33,7 @@ class UserClassActivity extends Model
 
     public function attachments(){
         return $this->hasMany(UserClassActivityAppend::class, 'user_class_activity_id', 'user_class_activity_id');
-    } 
+    }
 
     public function tcc(){
         return self::join('user_class', 'user_class_activity.user_class_id', '=', 'user_class.user_class_id')
