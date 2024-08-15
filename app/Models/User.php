@@ -53,6 +53,11 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function group()
+    {
+        return $this->belongsToMany(Group::class, 'user_group', 'user_id', 'group_id');
+    }
+
     public static function students()
     {
         return User::select('users.*')

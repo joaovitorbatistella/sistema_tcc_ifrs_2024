@@ -12,15 +12,18 @@ class ActivityController extends Controller
 {
     public function index($class_id=null)
     {
-        $user_id = auth()->user()->id; // Obtendo o ID do usuário autenticado
-    
+        $user =  auth()->user();
+        $user_id = $user->id; // Obtendo o ID do usuário autenticado
+        $group = $user->group()->first();
+
         // Separar as atividades em andamento, futuras e históricas
         $todoActivities = UserClassActivity::getTodoActivities($user_id, $class_id)->get();
         $historicalActivities = UserClassActivity::getHistoricalActivities($user_id, $class_id)->get();
     
         return view('turma.overviewturma', [
             'todoActivities' => $todoActivities,
-            'historicalActivities' => $historicalActivities
+            'historicalActivities' => $historicalActivities,
+            'group' => $group
         ]);
     }
     

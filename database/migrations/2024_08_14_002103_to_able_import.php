@@ -49,8 +49,9 @@ return new class extends Migration
                 (505,'66a6872116b68','ANEXO5.pdf',{$admin->id},1,1,'templates/66a308287167b/ANEXO5.pdf','2024-07-18 23:30:25.000','2024-07-18 23:30:25.000');
         ");
 
+        $base_path = base_path();
         $storage_path = storage_path();
-        echo shell_exec("sh $storage_path/utils/copy-default-files.sh $storage_path");
+        echo shell_exec("sh $base_path/database/utils/copy-default-files.sh $base_path $storage_path");
     }
 
     /**

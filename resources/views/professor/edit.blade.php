@@ -27,7 +27,7 @@
         <div>
             <div class="overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">
                 <div>
-                    <form class="max-w-md mx-auto" action="{{route('professores-controller.update',['professor' => $professor->id])}}" method="POST">
+                    <form action="{{route('professores-controller.update',['professor' => $professor->id])}}" method="POST">
                         @csrf
                         <input type="hidden" name="_method" value="PUT">
                         <div style="margin-top: 15px;">

@@ -15,12 +15,14 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('alunos-controller.index')" :active="request()->routeIs('alunos-controller.index')">
-                        {{ __('Alunos') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('professores-controller.index')" :active="request()->routeIs('professores-controller.index')">
-                        {{ __('Professores') }}
-                    </x-nav-link>
+                    @if(Auth::user()->group()->first()->able_to_create_users)
+                        <x-nav-link :href="route('alunos-controller.index')" :active="request()->routeIs('alunos-controller.index')">
+                            {{ __('Alunos') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('professores-controller.index')" :active="request()->routeIs('professores-controller.index')">
+                            {{ __('Professores') }}
+                        </x-nav-link>
+                    @endif
                     <x-nav-link :href="route('class-controller.index')" :active="request()->routeIs('class-controller.index')">
                         {{ __('Turmas') }}
                     </x-nav-link>

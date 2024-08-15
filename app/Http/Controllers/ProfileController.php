@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,6 +19,20 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => $request->user(),
+        ]);
+    }
+
+    public function userParams(Request $request): JsonResponse
+    {
+        $user = auth()->user();
+        $group = $user->group()->first();
+
+        return response()->json([
+            "success"   => true,
+            "data"      => [
+                "user"  => $user,
+                "group" => $group
+            ]
         ]);
     }
 
