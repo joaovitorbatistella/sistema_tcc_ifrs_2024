@@ -109,9 +109,11 @@
                 <h2 class="titulo">
                     Documentos Importantes
                 </h2>
-                <button id="openModalDocButton" type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 rounded">
-                    Adicionar Documento
-                </button>
+                @if(Auth::user()->group()->first()->able_to_upload_files_library)
+                    <button id="openModalDocButton" type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 rounded">
+                        Adicionar Documento
+                    </button>
+                @endif
             </div>
 
             <!-- Modal Documento-->
@@ -147,9 +149,11 @@
                 <h2 class="titulo">
                     TCCs Antigos
                 </h2>
-                <button id="openModalTCCButton" type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 rounded">
-                    Adicionar TCC
-                </button>
+                @if(Auth::user()->group()->first()->able_to_upload_files_library)
+                    <button id="openModalTCCButton" type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 rounded">
+                        Adicionar TCC
+                    </button>
+                @endif
             </div>
 
             <!-- Modal TCC -->
@@ -204,38 +208,54 @@
                     modal.classList.add('hidden');
                 };
 
-                const updateTable = (tableId, searchQuery = '', typeId = null, orderBy = 'name') => {
-                    fetch(`{{ route('files.search-public') }}?search=${encodeURIComponent(searchQuery)}${typeId ? `&type_id=${typeId}` : ''}&order_by=${orderBy}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            const tableBody = document.getElementById(tableId);
-                            tableBody.innerHTML = '';
+                const updateTable = async (tableId, searchQuery = '', typeId = null, orderBy = 'name') => {
+                    fetch(`{{ route('profile.user-params') }}`)
+                    .then(response => response.json())
+                    .then(({ data }) => {
+                        fetch(`{{ route('files.search-public') }}?search=${encodeURIComponent(searchQuery)}${typeId ? `&type_id=${typeId}` : ''}&order_by=${orderBy}`)
+                            .then(response => response.json())
+                            .then(data_search => {
+                                fetch(`{{ route('profile.user-params') }}`)
+                                const tableBody = document.getElementById(tableId);
+                                tableBody.innerHTML = '';
 
-                            data.forEach(file => {
-                                const row = document.createElement('tr');
-                                row.classList.add('table-row');
-                                row.innerHTML = `
-                            <td class="table-cell">${file.name}</td>
-                            <td class="table-cell">${new Date(file.updated_at).toLocaleString()}</td>
-                            <td class="table-cell">
-                                <button class="download-button" data-id="${file.append_id}">
-                                    <span class="material-icons-outlined download-icon">file_download</span>
-                                </button>
-                                <button class="delete-button" data-id="${file.append_id}">
-                                    <span class="material-icons-outlined delete-icon">delete</span>
-                                </button>
-                            </td>                 
-                        `;
-                                tableBody.appendChild(row);
+                                data_search.forEach(file => {
+                                    const row = document.createElement('tr');
+                                    row.classList.add('table-row');
+
+                                    let content =  `
+                                        <td class="table-cell">${file.name}</td>
+                                        <td class="table-cell">${new Date(file.updated_at).toLocaleString()}</td>
+                                        <td class="table-cell">
+                                            <button class="download-button" data-id="${file.append_id}">
+                                                <span class="material-icons-outlined download-icon">file_download</span>
+                                            </button>
+                                    `;
+
+                                    if(data.group.able_to_delete_files_from_library) {
+                                        content += `
+                                            <button class="delete-button" data-id="${file.append_id}">
+                                                <span class="material-icons-outlined delete-icon">delete</span>
+                                            </button>
+                                        `;
+                                    }
+                                           
+                                    content += `</td>`;
+                                    
+                                    row.innerHTML = content
+                                    tableBody.appendChild(row);
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Erro ao buscar arquivos:', error);
                             });
-                        })
-                        .catch(error => {
-                            console.error('Erro ao buscar arquivos:', error);
-                        });
+                    })
                 };
 
-                openModalDocButton.addEventListener('click', () => openModal(fileDocModal));
-                openModalTCCButton.addEventListener('click', () => openModal(fileTCCModal));
+                if(openModalDocButton) {
+                    openModalDocButton.addEventListener('click', () => openModal(fileDocModal));
+                    openModalTCCButton.addEventListener('click', () => openModal(fileTCCModal));
+                }
 
                 closeModalDocButton.addEventListener('click', () => closeModal(fileDocModal));
                 closeModalTCCButton.addEventListener('click', () => closeModal(fileTCCModal));

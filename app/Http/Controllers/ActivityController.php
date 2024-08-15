@@ -11,7 +11,10 @@ class ActivityController extends Controller
 {
     public function index($class_id=null)
     {
-        $user_id = auth()->user()->id; // Obtendo o ID do usuário autenticado
+        $user =  auth()->user();
+        $user_id = $user->id; // Obtendo o ID do usuário autenticado
+        $group = $user->group()->first();
+
         $activities = UserClassActivity::userActivity($user_id, $class_id);
     
         // Separar as atividades em andamento, futuras e históricas
@@ -23,6 +26,7 @@ class ActivityController extends Controller
             'ongoingActivities' => $ongoingActivities,
             'futureActivities' => $futureActivities,
             'historicalActivities' => $historicalActivities,
+            'group' => $group
         ]);
     }
     
@@ -30,7 +34,6 @@ class ActivityController extends Controller
     {
         $activity = UserClassActivity::findOrFail($id);
         $actualStep = UserClassActivityStep::getMinStepId($id);
-
     
         return view('turma.activity-details', [
             'activity' => $activity,

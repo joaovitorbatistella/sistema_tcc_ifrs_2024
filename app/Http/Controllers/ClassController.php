@@ -30,6 +30,11 @@ class ClassController extends Controller
 
     public function index()
     {
+        $group = auth()->user()->group()->first();
+        if(!$group->able_to_create_tcc) {
+            return abort(404, 'Unauthorized');
+        }
+
         return view('turma.cadastroturma');
     }
 
@@ -73,6 +78,14 @@ class ClassController extends Controller
     public function store(Request $request)
     {
         try {
+            $group = auth()->user()->group()->first();
+            if(!$group->able_to_create_tcc) {
+                return response()->json([
+                    "success"   => false,
+                    "message"   => "Unauthorized."
+                ], 403);
+            }
+            
             // $request->validate([
             //     'file_1'  => 'mimes:pdf,jpg,png|max:2048',
             //     'file_2'  => 'mimes:pdf,jpg,png|max:2048',

@@ -10,7 +10,7 @@ use function Laravel\Prompts\alert;
 class TurmasController extends Controller
 {
 
-    public readonly User $aluno;
+    public User $aluno;
 
     public function __construct()
     {

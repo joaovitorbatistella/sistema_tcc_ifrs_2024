@@ -17,6 +17,11 @@ class AlunosController extends Controller
      */
     public function index()
     {
+        $group = auth()->user()->group()->first();
+        if(!$group->able_to_create_users) {
+            return abort(404, 'Unauthorized.');
+        }
+
         $alunos = User::students();
         return view('aluno.index',['alunos' => $alunos]);
     }
@@ -26,6 +31,10 @@ class AlunosController extends Controller
      */
     public function create()
     {
+        $group = auth()->user()->group()->first();
+        if(!$group->able_to_create_users) {
+            return abort(404, 'Unauthorized.');
+        }
         return view('aluno.create');
     }
 
@@ -34,6 +43,14 @@ class AlunosController extends Controller
      */
     public function store(Request $request)
     {
+        $group = auth()->user()->group()->first();
+        if(!$group->able_to_create_users) {
+            return response()->json([
+                "success"   => false,
+                "message"   => "Unauthorized."
+            ], 403);
+        }
+        
         $created = User::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
@@ -67,6 +84,10 @@ class AlunosController extends Controller
      */
     public function show(User $aluno)
     {
+        $group = auth()->user()->group()->first();
+        if(!$group->able_to_create_users) {
+            return abort(404, 'Unauthorized.');
+        }
         return view('aluno.show',['aluno' => $aluno]);
     }
 
@@ -75,6 +96,11 @@ class AlunosController extends Controller
      */
     public function edit(User $aluno)
     {
+        $group = auth()->user()->group()->first();
+        if(!$group->able_to_create_users) {
+            return abort(404, 'Unauthorized.');
+        }
+
         return view('aluno.edit',['aluno' => $aluno]);
     }
 
@@ -83,6 +109,14 @@ class AlunosController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $group = auth()->user()->group()->first();
+        if(!$group->able_to_create_users) {
+            return response()->json([
+                "success"   => false,
+                "message"   => "Unauthorized."
+            ], 403);
+        }
+
         $updated = User::where('id', $id)->update($request->except(['_token', '_method']));
 
         if($updated){
@@ -98,6 +132,14 @@ class AlunosController extends Controller
      */
     public function destroy(string $id)
     {
+        $group = auth()->user()->group()->first();
+        if(!$group->able_to_create_users) {
+            return response()->json([
+                "success"   => false,
+                "message"   => "Unauthorized."
+            ], 403);
+        }
+
         User::where('id', $id)->delete();
         return redirect()->route('alunos-controller.index');
     }

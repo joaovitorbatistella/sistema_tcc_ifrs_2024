@@ -20,18 +20,20 @@
                <span class="flex-1 ms-3 whitespace-nowrap">Meus Arquivos</span>
             </a>
          </li>
-         <li>
-            <a href="{{route('alunos-controller.index')}}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">
-               <i class="material-icons-outlined text-base text-gray-500">group</i>
-               <span class="flex-1 ms-3 whitespace-nowrap">Alunos</span>
-            </a>
-         </li>
-         <li>
-            <a href="{{route('professores-controller.index')}}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">
-               <i class="material-icons-outlined text-base text-gray-500">school</i>
-               <span class="flex-1 ms-3 whitespace-nowrap">Professores</span>
-            </a>
-         </li>
+         @if(Auth::user()->group()->first()->able_to_create_users)
+            <li>
+               <a href="{{route('alunos-controller.index')}}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">
+                  <i class="material-icons-outlined text-base text-gray-500">group</i>
+                  <span class="flex-1 ms-3 whitespace-nowrap">Alunos</span>
+               </a>
+            </li>
+            <li>
+               <a href="{{route('professores-controller.index')}}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">
+                  <i class="material-icons-outlined text-base text-gray-500">school</i>
+                  <span class="flex-1 ms-3 whitespace-nowrap">Professores</span>
+               </a>
+            </li>
+         @endif
          <li>
             <a href="{{route('class-controller.index')}}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">
                <i class="material-icons-outlined text-base text-gray-500">groups</i>

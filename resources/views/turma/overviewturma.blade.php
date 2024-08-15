@@ -7,11 +7,13 @@
                     {{ __('Atividades do TCC') }}
                 </h2>
             </div>
-            <div>
-                <button type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 rounded">
-                <a href="{{route('class-controller-new.index')}}">Adicionar Turma</a>
-                </button>
-            </div>
+            @if($group->able_to_create_tcc)
+                <div>
+                    <button type="button" class="bg-c-green text-white text-lg font-bold py-1 px-2 rounded">
+                    <a href="{{route('class-controller-new.index')}}">Adicionar Turma</a>
+                    </button>
+                </div>
+            @endif
         </div>
     </x-slot>
 

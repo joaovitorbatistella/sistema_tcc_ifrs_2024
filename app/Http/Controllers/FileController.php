@@ -11,6 +11,14 @@ class FileController extends Controller
 {
     public function uploadFile(Request $request)
     {
+        $group = auth()->user()->group()->first();
+        if(!$group->able_to_upload_files_library) {
+            return response()->json([
+                "success"   => false,
+                "message"   => "Unauthorized."
+            ], 403);
+        }
+
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $path = $file->store('uploads');
@@ -39,6 +47,14 @@ class FileController extends Controller
 
     public function deleteFile($id)
     {
+        $group = auth()->user()->group()->first();
+        if(!$group->able_to_delete_files_from_library) {
+            return response()->json([
+                "success"   => false,
+                "message"   => "Unauthorized."
+            ], 403);
+        }
+
         $file = Append::findOrFail($id);
         Storage::delete($file->path);
         $file->delete();
