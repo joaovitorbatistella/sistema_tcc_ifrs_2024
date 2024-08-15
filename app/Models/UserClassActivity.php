@@ -36,12 +36,22 @@ class UserClassActivity extends Model
     } 
 
 
-    public static function userActivity($user_id, $class_id)
+    public static function getTodoActivities($user_id, $class_id)
     {
         return UserClassActivity::select('user_class_activity.*')
                    ->join('user_class', 'user_class_activity.user_class_id', '=', 'user_class.user_class_id')
                    ->where('user_class.user_id', $user_id)
-                   ->where('user_class.tcc_class_id', $class_id);
+                   ->where('user_class.tcc_class_id', $class_id)
+                   ->where('user_class_activity.delivered_at', null);
+    }
+
+    public static function getHistoricalActivities($user_id, $class_id)
+    {
+        return UserClassActivity::select('user_class_activity.*')
+                   ->join('user_class', 'user_class_activity.user_class_id', '=', 'user_class.user_class_id')
+                   ->where('user_class.user_id', $user_id)
+                   ->where('user_class.tcc_class_id', $class_id)
+                   ->whereNotNull('user_class_activity.delivered_at');
     }
     
 }

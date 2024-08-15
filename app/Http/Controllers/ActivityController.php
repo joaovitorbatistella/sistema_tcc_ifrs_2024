@@ -6,35 +6,32 @@ use App\Models\UserClassActivityStep;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\UserClassActivity;
+use App\Models\TCC;
 
 class ActivityController extends Controller
 {
     public function index($class_id)
     {
         $user_id = auth()->user()->id; // Obtendo o ID do usuário autenticado
-        $activities = UserClassActivity::userActivity($user_id, $class_id);
+        $tcc = TCC::getTccByClassId($class_id);
     
         // Separar as atividades em andamento, futuras e históricas
-        $ongoingActivities = $activities->where('delivered_at', null)->where('due_at', '>=', now())->get();
-        $futureActivities = $activities->where('delivered_at', null)->where('due_at', '>', now())->get();
-        $historicalActivities = $activities->whereNotNull('delivered_at')->get();
+        $todoActivities = UserClassActivity::getTodoActivities($user_id, $class_id)->get();
+        $historicalActivities = UserClassActivity::getHistoricalActivities($user_id, $class_id)->get();
     
         return view('turma.overviewturma', [
-            'ongoingActivities' => $ongoingActivities,
-            'futureActivities' => $futureActivities,
+            'todoActivities' => $todoActivities,
             'historicalActivities' => $historicalActivities,
+            'tcc' => $tcc,
         ]);
     }
     
     public function show($id)
     {
         $activity = UserClassActivity::findOrFail($id);
-        $actualStep = UserClassActivityStep::getMinStepId($id);
-
     
         return view('turma.activity-details', [
-            'activity' => $activity,
-            'actualStep' => $actualStep
+            'activity' => $activity
         ]);
     }
 
