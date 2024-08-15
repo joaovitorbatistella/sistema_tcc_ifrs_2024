@@ -5,6 +5,24 @@
         </h2>
     </x-slot>
 
+    <?php
+        $actualStep = -1;
+        $multipleSteps = false;
+
+        if (count($activity->steps) > 1){
+            $multipleSteps = true;
+        }else{
+            $multipleSteps = false;
+        }
+        
+        foreach($activity->steps as $index => $step){
+            if ($step->completed === 0) {
+                $actualStep = $step->user_class_activity_step_id;
+                break;
+            }
+        }
+    ?>
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
@@ -15,25 +33,33 @@
                             {{ $activity->name }}
                         </div>
                         <div>
-                            <button id="advanceButton" onclick="openModal('advanceModal')">
-                                Avançar
-                            </button>
-                            <button id="returnButton" onclick="openModal('returnModal')" class="ml-2">
-                                Devolver
-                            </button>
+                            @if ($multipleSteps)
+                                <button id="advanceButton" onclick="openModal('advanceModal')">
+                                    Avançar
+                                </button>
+                                <button id="returnButton" onclick="openModal('returnModal')" class="ml-2">
+                                    Devolver
+                                </button>
+                            @else
+                                <button id="advanceButton" onclick="openModal('advanceModal')">
+                                    Concluir
+                                </but>
+                            @endif
                         </div>
                     </div>
                     
-                    <!-- Linha do Tempo -->
-                    <div class="relative timeline-wrapper">
-                        <div class="flex items-center justify-between">
-                            @foreach($activity->steps as $index => $step)
-                                <div class="timeline-step {{ $step->completed ? 'completed-step' : 'incomplete-step' }}">
-                                    {{ $index + 1 }}
-                                </div>
-                            @endforeach
+                    @if ($multipleSteps)
+                        <!-- Linha do Tempo -->
+                        <div class="relative timeline-wrapper">
+                            <div class="flex items-center justify-between">
+                                @foreach($activity->steps as $index => $step)
+                                    <div class="timeline-step {{ $step->completed ? 'completed-step' : 'incomplete-step' }}">
+                                        {{ $index + 1 }}
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
+                    @endif
 
                     <!-- Detalhes da Atividade -->
                     <div class="mt-6 text-gray-500">
@@ -75,7 +101,11 @@
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
         <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full modal-content">
             <div class="modal-header">
-                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Avançar Atividade</h3>
+                @if ($multipleSteps)
+                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Avançar Atividade</h3>
+                @else
+                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Concluir Atividade</h3>
+                @endif
                 <button type="button" onclick="closeModal('advanceModal')" class="text-gray-400 hover:text-gray-500">
                     <span class="sr-only">Close</span>
                 </button>

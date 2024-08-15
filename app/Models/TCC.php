@@ -24,4 +24,18 @@ class TCC extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function tccClass()
+    {
+        return $this->hasMany(TccClass::class, 'tcc_id');
+    }
+
+    public static function getTccByClassId($tcc_class_id)
+    {
+        return TCC::select('tcc.*')
+                    ->join('tcc_class', 'tcc.tcc_id', '=', 'tcc_class.tcc_id')
+                    ->where('tcc_class.tcc_class_id', $tcc_class_id)
+                    ->get();
+    }
+
 }

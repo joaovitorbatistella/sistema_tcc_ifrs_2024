@@ -6,6 +6,7 @@ use App\Models\UserClassActivityStep;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\UserClassActivity;
+use App\Models\TCC;
 
 class ActivityController extends Controller
 {
@@ -15,16 +16,12 @@ class ActivityController extends Controller
         $user_id = $user->id; // Obtendo o ID do usuário autenticado
         $group = $user->group()->first();
 
-        $activities = UserClassActivity::userActivity($user_id, $class_id);
-    
         // Separar as atividades em andamento, futuras e históricas
-        $ongoingActivities = $activities->where('delivered_at', null)->where('due_at', '>=', now())->get();
-        $futureActivities = $activities->where('delivered_at', null)->where('due_at', '>', now())->get();
-        $historicalActivities = $activities->whereNotNull('delivered_at')->get();
+        $todoActivities = UserClassActivity::getTodoActivities($user_id, $class_id)->get();
+        $historicalActivities = UserClassActivity::getHistoricalActivities($user_id, $class_id)->get();
     
         return view('turma.overviewturma', [
-            'ongoingActivities' => $ongoingActivities,
-            'futureActivities' => $futureActivities,
+            'todoActivities' => $todoActivities,
             'historicalActivities' => $historicalActivities,
             'group' => $group
         ]);
@@ -33,26 +30,36 @@ class ActivityController extends Controller
     public function show($id)
     {
         $activity = UserClassActivity::findOrFail($id);
-        $actualStep = UserClassActivityStep::getMinStepId($id);
     
         return view('turma.activity-details', [
-            'activity' => $activity,
-            'actualStep' => $actualStep
+            'activity' => $activity
         ]);
     }
 
     public function advance(Request $request, $id)
     {
+        $data = (object) $request->all();
         // Lógica para avançar a atividade
-        $activity = UserClassActivityStep::findOrFail($id);
+        $step = UserClassActivityStep::findOrFail($id);
 
-        if ($activity) {
-            $activity->completed = 1;
-            $activity->save();
+        if ($step) {
+            $step->completed = 1;
+            $step->notes = $data->comment;
+            $step->delivered_at = Carbon::now();
+            $step->save();
+
+            $allCompleted = !UserClassActivityStep::where('user_class_activity_id', $step->user_class_activity_id)
+                                                 ->where('completed', 0)
+                                                 ->exists();
+
+            if($allCompleted && $activity = $step->activity) {
+                $activity->delivered_at = Carbon::now();
+                $activity->save();
+            }
     
-            return redirect()->route('dashboard')->with('success', 'Atividade avançada com sucesso!');
+            return redirect()->route('class-controller.index')->with('success', 'Atividade avançada com sucesso!');
         } else {
-            return redirect()->route('dashboard')->with('error', 'Atividade não encontrada.');
+            return redirect()->route('class-controller.index')->with('error', 'Atividade não encontrada.');
         }
         
     }

@@ -33,15 +33,37 @@ class UserClassActivity extends Model
 
     public function attachments(){
         return $this->hasMany(UserClassActivityAppend::class, 'user_class_activity_id', 'user_class_activity_id');
+    }
+
+    public function tcc(){
+        return self::join('user_class', 'user_class_activity.user_class_id', '=', 'user_class.user_class_id')
+                    ->join('tcc_class', 'user_class.tcc_class_id', '=', 'user_class.tcc_class_id')
+                    ->join('tcc', 'tcc_class.tcc_id', '=', 'tcc.tcc_id')
+                    ->first();
     } 
 
 
-    public static function userActivity($user_id, $class_id=null)
+    public static function getTodoActivities($user_id, $class_id)
     {
         $query = UserClassActivity::select('user_class_activity.*')
                    ->join('user_class', 'user_class_activity.user_class_id', '=', 'user_class.user_class_id')
-                   ->where('user_class.user_id', $user_id);
+                   ->where('user_class.user_id', $user_id)
+                   ->where('user_class_activity.delivered_at', null);
+
+        if(isset($class_id)) {
+            $query->where('user_class.tcc_class_id', $class_id);
+        }
         
+        return $query;
+    }
+
+    public static function getHistoricalActivities($user_id, $class_id)
+    {
+        $query = UserClassActivity::select('user_class_activity.*')
+                   ->join('user_class', 'user_class_activity.user_class_id', '=', 'user_class.user_class_id')
+                   ->where('user_class.user_id', $user_id)
+                   ->whereNotNull('user_class_activity.delivered_at');
+
         if(isset($class_id)) {
             $query->where('user_class.tcc_class_id', $class_id);
         }
